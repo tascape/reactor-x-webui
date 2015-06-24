@@ -154,12 +154,7 @@ public class Firefox extends WebBrowser {
             while (System.currentTimeMillis() < end) {
                 Utils.sleep(10000, "Wait for netexport http archive file");
                 try {
-                    File[] hars = this.harPath.toFile().listFiles(new FilenameFilter() {
-                        @Override
-                        public boolean accept(File dir, String name) {
-                            return name.endsWith(".har");
-                        }
-                    });
+                    File[] hars = this.harPath.toFile().listFiles((File dir, String name) -> name.endsWith(".har"));
                     if (hars == null || hars.length == 0) {
                         continue;
                     }
@@ -170,12 +165,7 @@ public class Firefox extends WebBrowser {
 
                     this.clearHarDir();
                     this.doNetExport();
-                    hars = this.harPath.toFile().listFiles(new FilenameFilter() {
-                        @Override
-                        public boolean accept(File dir, String name) {
-                            return name.endsWith(".har");
-                        }
-                    });
+                    hars = this.harPath.toFile().listFiles((File dir, String name) -> name.endsWith(".har"));
                     File har = hars[0];
                     LOG.debug("Load data from {}", har.getAbsolutePath());
                     JSONObject json = new JSONObject(FileUtils.readFileToString(har));

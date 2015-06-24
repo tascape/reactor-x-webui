@@ -2,6 +2,7 @@ package com.tascape.qa.example.selenium.perf.test;
 
 import com.tascape.qa.example.selenium.perf.driver.GithubUi;
 import com.tascape.qa.th.comm.WebBrowser;
+import com.tascape.qa.th.driver.TestDriver;
 import com.tascape.qa.th.test.JUnit4Test;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ import org.slf4j.LoggerFactory;
 public class TestGithubPageLoad extends JUnit4Test {
     private static final Logger LOG = LoggerFactory.getLogger(TestGithubPageLoad.class);
 
-    public static final String DRIVER_GITHUB = "DRIVER_GITHUB";
+    public static final TestDriver DRIVER_GITHUB = new TestDriver(TestGithubPageLoad.class, "DRIVER_GITHUB");
 
     private final GithubUi github;
 

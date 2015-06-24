@@ -31,7 +31,7 @@ public class TestSuiteOne extends AbstractSuite {
         GithubUi github = new GithubUi();
         github.setEntityCommunication(firefox);
 
-        this.putDirver(TestGithubPageLoad.class, TestGithubPageLoad.DRIVER_GITHUB, github);
+        this.putTestDirver(TestGithubPageLoad.DRIVER_GITHUB, github);
     }
 
     @Override
