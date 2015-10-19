@@ -40,7 +40,7 @@ public class Firefox extends WebBrowser {
         FirefoxProfile profile;
 
         ProfilesIni profileIni = new ProfilesIni();
-        String profileName = SYSCONFIG.getProperty(SYSPROP_FF_PROFILE_NAME);
+        String profileName = sysConfig.getProperty(SYSPROP_FF_PROFILE_NAME);
         if (profileName != null) {
             LOG.debug("Load Firefox profile named as {}", profileName);
             profile = profileIni.getProfile(profileName);
@@ -94,8 +94,8 @@ public class Firefox extends WebBrowser {
     public class Firebug implements Extension {
         private final String tokenNetExport = UUID.randomUUID().toString();
 
-        private final Path harPath = SYSCONFIG.getLogPath()
-                .resolve(SYSCONFIG.getExecId())
+        private final Path harPath = sysConfig.getLogPath()
+                .resolve(sysConfig.getExecId())
                 .resolve(SystemConfiguration.CONSTANT_LOG_KEEP_ALIVE_PREFIX + "har-" + System.currentTimeMillis());
 
         public void clearHarDir() throws IOException {

@@ -1,5 +1,6 @@
 package com.tascape.qa.th.comm;
 
+import com.tascape.qa.th.SystemConfiguration;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -41,10 +42,10 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     }
 
     public static WebBrowser newBrowser(boolean extEnabled) throws Exception {
-        String type = SYSCONFIG.getProperty(SYSPROP_WEBBROWSER_TYPE);
+        String type = SystemConfiguration.getInstance().getProperty(SYSPROP_WEBBROWSER_TYPE);
         if (type == null) {
             throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + " is not specified. "
-                    + "firefox and chrome are supported.");
+                + "firefox and chrome are supported.");
         }
         switch (type) {
             case "firefox":

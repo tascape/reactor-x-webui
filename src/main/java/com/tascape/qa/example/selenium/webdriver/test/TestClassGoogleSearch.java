@@ -4,6 +4,7 @@ import com.tascape.qa.example.selenium.webdriver.driver.GoogleSearchUi;
 import com.tascape.qa.th.Utils;
 import com.tascape.qa.th.data.TestDataProvider;
 import com.tascape.qa.th.data.TestIterationData;
+import com.tascape.qa.th.driver.TestDriver;
 import com.tascape.qa.th.test.JUnit4Test;
 import org.junit.Test;
 
@@ -13,12 +14,12 @@ import org.junit.Test;
  */
 public class TestClassGoogleSearch extends JUnit4Test {
 
-    public static final String SEARCH_UI = "SEARCH_UI";
+    public static final TestDriver SEARCH_UI = new TestDriver(TestClassGoogleSearch.class, GoogleSearchUi.class);
 
     private final GoogleSearchUi searchUi;
 
     public TestClassGoogleSearch() {
-        this.searchUi = this.getEntityDriver(SEARCH_UI, GoogleSearchUi.class);
+        this.searchUi = this.getEntityDriver(SEARCH_UI);
     }
 
     @Test

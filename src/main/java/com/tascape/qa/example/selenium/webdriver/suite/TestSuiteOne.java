@@ -24,13 +24,18 @@ public class TestSuiteOne extends AbstractSuite {
     }
 
     @Override
+    public String getProductUnderTest() {
+        return "na";
+    }
+
+    @Override
     protected void setUpEnvironment() throws Exception {
         browser = WebBrowser.newBrowser(false);
         browser.landscape();
         GoogleSearchUi search = new GoogleSearchUi();
         search.setEntityCommunication(browser);
 
-        this.putDirver(TestClassGoogleSearch.class, TestClassGoogleSearch.SEARCH_UI, search);
+        this.putTestDirver(TestClassGoogleSearch.SEARCH_UI, search);
     }
 
     @Override

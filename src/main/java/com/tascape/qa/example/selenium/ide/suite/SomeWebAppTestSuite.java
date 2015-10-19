@@ -24,12 +24,17 @@ public class SomeWebAppTestSuite extends SeleniumIdeSuite {
     }
 
     @Override
+    public String getProductUnderTest() {
+        return "Some App";
+    }
+
+    @Override
     protected void setUpEnvironment() throws Exception {
         SomeWebApp app = new SomeWebApp();
         LOG.info("Check system property {}", SomeWebApp.SYSPROP_URL);
         app.setUrl(this.getSuiteProperty(SomeWebApp.SYSPROP_URL, "http://paypal.com"));
 
-        this.putDirver(SomeWebAppSeleniumIdeTests.class, SomeWebAppSeleniumIdeTests.DRIVER_SOME_WEB_APP, app);
+        this.putTestDirver(SomeWebAppSeleniumIdeTests.DRIVER_SOME_WEB_APP, app);
     }
 
     @Override

@@ -34,9 +34,7 @@ public abstract class SeleniumIdeTests extends AbstractTest {
         FileUtils.write(suite, content);
         LOG.debug("Temp test suite file {}", suite.getAbsolutePath());
 
-        File result = this.getTestLogPath().resolve("ide-result.html").toFile();
-        LOG.debug("Test result file {}", result.getAbsolutePath());
-
+        File result = this.saveIntoFile("ide-result", "html", "");
         this.captureScreens(2000);
         HTMLLauncher launcher = new HTMLLauncher(this.seleniumServer);
         String ff = "*firefox";

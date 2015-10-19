@@ -9,6 +9,33 @@
     <version>1.0.0</version>  
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.tascape.qa</groupId>
+            <artifactId>testharness</artifactId>
+            <version>1.0.37</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-server</artifactId>
+            <version>2.46.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>2.46.0</version>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+        <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+    </properties>
+
     <name>thx-selenium</name>
     <description>TestHarness Extension for Selenium</description>
     <url>https://github.com/tascape/testharness</url>
@@ -28,31 +55,7 @@
     </developers>
     <scm>
         <connection>scm:git:git@github.com:tascape/testharness.git</connection>
-        <developerConnection>scm:git:git@github.com:tascape/testharness.git</developerConnection>
-        <url>git:git@github.com:juven/git-demo.git</url>
+        <developerConnection>scm:git:git@github.com:tascape/thx-selinium.git</developerConnection>
+        <url>git:git@github.com:tascape/thx-selinium.git</url>
     </scm>
-    
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.tascape.qa</groupId>
-            <artifactId>testharness</artifactId>
-            <version>1.0.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-server</artifactId>
-            <version>2.46.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>2.46.0</version>
-        </dependency>
-    </dependencies>
 </project>

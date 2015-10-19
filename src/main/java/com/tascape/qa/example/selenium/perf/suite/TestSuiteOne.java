@@ -25,6 +25,11 @@ public class TestSuiteOne extends AbstractSuite {
     }
 
     @Override
+    public String getProductUnderTest() {
+        return "na";
+    }
+
+    @Override
     protected void setUpEnvironment() throws Exception {
         firefox = WebBrowser.newFirefox(true);
         firefox.landscape();

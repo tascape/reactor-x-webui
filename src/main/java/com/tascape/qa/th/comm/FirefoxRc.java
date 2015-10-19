@@ -26,7 +26,7 @@ public class FirefoxRc extends WebBrowserRc {
         rcc.setPort(this.port);
         rcc.setBrowserTimeoutInMs(60000);
         rcc.setTimeoutInSeconds(60);
-        String folder = SYSCONFIG.getProperty(SYSPROP_FF_PROFILE_FOLDER, DEFAULT_FF_PROFILE_FOLDER);
+        String folder = sysConfig.getProperty(SYSPROP_FF_PROFILE_FOLDER, DEFAULT_FF_PROFILE_FOLDER);
         File profile = new File(folder);
         if (profile.exists()) {
             LOG.info("Using firefox profile template {}", profile.getAbsolutePath());
@@ -44,7 +44,7 @@ public class FirefoxRc extends WebBrowserRc {
 
     @Override
     public DefaultSelenium initBrowser(String url) {
-        String exe = SYSCONFIG.getProperty(Firefox.SYSPROP_FF_BINARY);
+        String exe = sysConfig.getProperty(Firefox.SYSPROP_FF_BINARY);
         String ff = "*firefox";
         if (exe != null) {
             LOG.info("Use Firefox executable {}", exe);

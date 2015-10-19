@@ -15,12 +15,12 @@ import org.slf4j.LoggerFactory;
 public class TestGithubPageLoad extends JUnit4Test {
     private static final Logger LOG = LoggerFactory.getLogger(TestGithubPageLoad.class);
 
-    public static final TestDriver DRIVER_GITHUB = new TestDriver(TestGithubPageLoad.class, "DRIVER_GITHUB");
+    public static final TestDriver DRIVER_GITHUB = new TestDriver(TestGithubPageLoad.class, GithubUi.class);
 
     private final GithubUi github;
 
     public TestGithubPageLoad() {
-        this.github = this.getEntityDriver(DRIVER_GITHUB, GithubUi.class);
+        this.github = this.getEntityDriver(DRIVER_GITHUB);
     }
 
     @Test

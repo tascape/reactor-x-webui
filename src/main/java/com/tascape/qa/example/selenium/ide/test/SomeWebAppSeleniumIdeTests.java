@@ -3,6 +3,7 @@ package com.tascape.qa.example.selenium.ide.test;
 import com.tascape.qa.example.selenium.ide.driver.SomeWebApp;
 import com.tascape.qa.example.selenium.ide.test.data.SomeWebAppSeleniumIdeHtmlFiles;
 import com.tascape.qa.th.data.TestDataProvider;
+import com.tascape.qa.th.driver.TestDriver;
 import com.tascape.qa.th.test.SeleniumIdeTests;
 import java.io.File;
 import org.junit.Test;
@@ -17,12 +18,13 @@ import static org.junit.Assert.assertTrue;
 public class SomeWebAppSeleniumIdeTests extends SeleniumIdeTests {
     private static final Logger LOG = LoggerFactory.getLogger(SomeWebAppSeleniumIdeTests.class);
 
-    public static final String DRIVER_SOME_WEB_APP = "SOME_WEB_APP";
+    public static final TestDriver DRIVER_SOME_WEB_APP = new TestDriver(SomeWebAppSeleniumIdeTests.class,
+        SomeWebApp.class);
 
     private final SomeWebApp someWebApp;
 
     public SomeWebAppSeleniumIdeTests() throws Exception {
-        this.someWebApp = this.getEntityDriver(DRIVER_SOME_WEB_APP, SomeWebApp.class);
+        this.someWebApp = this.getEntityDriver(DRIVER_SOME_WEB_APP);
     }
 
     @Test
