@@ -5,28 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.tascape.qa</groupId>
-    <artifactId>thx-selenium</artifactId>
+    <artifactId>thx-webui</artifactId>
     <version>1.0.0</version>  
     <packaging>jar</packaging>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.tascape.qa</groupId>
-            <artifactId>testharness</artifactId>
-            <version>1.0.37</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-server</artifactId>
-            <version>2.46.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>2.46.0</version>
-        </dependency>
-    </dependencies>
+    <name>thx-webui</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -36,8 +18,26 @@
         <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
     </properties>
 
-    <name>thx-selenium</name>
-    <description>TestHarness Extension for Selenium</description>
+    <dependencies>
+        <dependency>
+            <groupId>com.tascape.qa</groupId>
+            <artifactId>testharness</artifactId>
+            <version>1.0.38</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-server</artifactId>
+            <version>2.48.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>2.48.2</version>
+        </dependency>
+    </dependencies>
+
+    <description>TestHarness Extension for Web UI</description>
     <url>https://github.com/tascape/testharness</url>
     <licenses>
         <license>
@@ -47,15 +47,82 @@
     </licenses>
     <developers>
         <developer>
-            <name>Lindsay Wang</name>
+            <name>Linsong Wang</name>
             <email>tascape@gmail.com</email>
             <organization>Tascape</organization>
             <organizationUrl>http://www.tascape.com</organizationUrl>
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git@github.com:tascape/testharness.git</connection>
-        <developerConnection>scm:git:git@github.com:tascape/thx-selinium.git</developerConnection>
-        <url>git:git@github.com:tascape/thx-selinium.git</url>
+        <connection>scm:git:git@github.com:tascape/thx-webui.git</connection>
+        <developerConnection>scm:git:git@github.com:tascape/thx-webui.git</developerConnection>
+        <url>git:git@github.com:tascape/thx-webui.git</url>
     </scm>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.5</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 </project>
