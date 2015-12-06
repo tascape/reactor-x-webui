@@ -8,7 +8,9 @@
     <artifactId>thx-webui</artifactId>
     <version>1.0.0</version>  
     <packaging>jar</packaging>
+
     <name>thx-webui</name>
+    <description>TestHarness Extension for Web UI</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,7 +24,7 @@
         <dependency>
             <groupId>com.tascape.qa</groupId>
             <artifactId>testharness</artifactId>
-            <version>1.0.38</version>
+            <version>1.0.41</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -37,8 +39,7 @@
         </dependency>
     </dependencies>
 
-    <description>TestHarness Extension for Web UI</description>
-    <url>https://github.com/tascape/testharness</url>
+    <url>https://github.com/tascape/thx-webui</url>
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>

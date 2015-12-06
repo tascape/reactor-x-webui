@@ -1,5 +1,5 @@
 /*
- * Copyright 2015.
+ * Copyright 2015 tascape.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,11 @@ public class GoogleSearchUi extends EntityDriver {
     @Override
     public String getName() {
         return "Google Search UI";
+    }
+
+    @Override
+    public String getVersion() {
+        return "1.0.0";
     }
 
     public void search(String term) throws Exception {
