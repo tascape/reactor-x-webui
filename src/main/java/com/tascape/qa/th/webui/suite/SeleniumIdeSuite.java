@@ -1,5 +1,5 @@
 /*
- * Copyright 2015.
+ * Copyright 2016 tascape.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,22 +29,22 @@ import org.slf4j.LoggerFactory;
 public abstract class SeleniumIdeSuite extends AbstractSuite {
     private static final Logger LOG = LoggerFactory.getLogger(SeleniumIdeSuite.class);
 
-    private static final SeleniumServer seleniumServer;
+    private static final SeleniumServer SELENIUM_SERVER;
 
     static {
         RemoteControlConfiguration rcc = new RemoteControlConfiguration();
         rcc.setTrustAllSSLCertificates(true);
         try {
-            seleniumServer = new SeleniumServer(false, rcc);
+            SELENIUM_SERVER = new SeleniumServer(false, rcc);
             LOG.info("Start Selenium server");
-            seleniumServer.start();
+            SELENIUM_SERVER.start();
         } catch (Exception ex) {
             throw new RuntimeException("Cannot start Selenium server", ex);
         }
-        seleniumServer.getServer().setStopAtShutdown(true);
+        SELENIUM_SERVER.getServer().setStopAtShutdown(true);
     }
 
     public static SeleniumServer getSeleniumServer() {
-        return seleniumServer;
+        return SELENIUM_SERVER;
     }
 }

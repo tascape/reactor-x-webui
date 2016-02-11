@@ -6,7 +6,7 @@
 
     <groupId>com.tascape.qa</groupId>
     <artifactId>thx-webui</artifactId>
-    <version>1.0.0</version>  
+    <version>1.1.0</version>  
     <packaging>jar</packaging>
 
     <name>thx-webui</name>
@@ -24,18 +24,18 @@
         <dependency>
             <groupId>com.tascape.qa</groupId>
             <artifactId>testharness</artifactId>
-            <version>1.0.41</version>
+            <version>1.1.1</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-            <version>2.48.2</version>
+            <version>2.49.1</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>2.48.2</version>
+            <version>2.49.1</version>
         </dependency>
     </dependencies>
 

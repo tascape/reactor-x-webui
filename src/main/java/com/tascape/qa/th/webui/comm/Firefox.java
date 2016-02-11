@@ -1,5 +1,5 @@
 /*
- * Copyright 2015.
+ * Copyright 2016 tascape.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ public class Firefox extends WebBrowser {
         long end = System.currentTimeMillis() + 180000;
         while (System.currentTimeMillis() < end) {
             try {
-                this.setWebDriver(new FirefoxDriver(profile));
+                super.setWebDriver(new FirefoxDriver(profile));
                 break;
             } catch (org.openqa.selenium.WebDriverException ex) {
                 String msg = ex.getMessage();
