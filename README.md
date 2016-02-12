@@ -1,2 +1,2 @@
 # testharness-x-selenium
-Testharness extension for Selenium
+Testharness extension of Selenium
