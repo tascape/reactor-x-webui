@@ -1,2 +1,2 @@
-# testharness-x-selenium
-Testharness extension of Selenium
+# thx-webui
+Testharness extension for web UI test automation, based on Selenium.
