@@ -1,5 +1,5 @@
 /*
- * Copyright 2015.
+ * Copyright 2015 - 2016 Nebula Bay.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class TestClassGoogleSearch extends JUnit4Test {
     private final GoogleSearchUi searchUi;
 
     public TestClassGoogleSearch() {
-        this.searchUi = this.getEntityDriver(SEARCH_UI);
+        this.searchUi = super.getEntityDriver(SEARCH_UI);
     }
 
     @Test

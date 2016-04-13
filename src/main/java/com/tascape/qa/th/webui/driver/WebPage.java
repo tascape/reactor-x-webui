@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 tascape.
+ * Copyright 2015 - 2016 Nebula Bay.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author linsong wang
  */
+@SuppressWarnings("ProtectedField")
 public abstract class WebPage extends LoadableComponent<WebPage> {
     private static final Logger LOG = LoggerFactory.getLogger(WebPage.class);
 
@@ -50,7 +51,7 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
     private static final Table<Class<? extends WebPage>, EntityDriver, WebPage> PAGES = HashBasedTable.create();
 
     public static synchronized <T extends WebPage> T getPage(Class<T> pageClass, EntityDriver entityDriver)
-            throws EntityCommunicationException {
+        throws EntityCommunicationException {
         WebPage pageLoaded = PAGES.get(pageClass, entityDriver);
         if (pageLoaded != null) {
             return pageClass.cast(pageLoaded);

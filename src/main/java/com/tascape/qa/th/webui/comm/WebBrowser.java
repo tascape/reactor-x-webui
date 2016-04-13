@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 tascape.
+ * Copyright 2015 - 2016 Nebula Bay.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public abstract class WebBrowser extends EntityCommunication implements WebDriver {
     private static final Logger LOG = LoggerFactory.getLogger(WebBrowser.class);
 
-    public static final String SYSPROP_WEBBROWSER_TYPE = "qa.comm.WEBBROWSER_TYPE";
+    public static final String SYSPROP_WEBBROWSER_TYPE = "qa.th.comm.WEBBROWSER_TYPE";
 
     public static final int AJAX_TIMEOUT_SECONDS = 180;
 

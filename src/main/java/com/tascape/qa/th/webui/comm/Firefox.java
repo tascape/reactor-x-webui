@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 tascape.
+ * Copyright 2015 - 2016 Nebula Bay.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +42,9 @@ public class Firefox extends WebBrowser {
 
     public static final int FIREBUG_PAGELOADEDTIMEOUT_MILLI = 180000;
 
-    public static final String SYSPROP_FF_BINARY = "qa.comm.FF_BINARY";
+    public static final String SYSPROP_FF_BINARY = "qa.th.comm.FF_BINARY";
 
-    public static final String SYSPROP_FF_PROFILE_NAME = "qa.comm.FF_PROFILE_NAME";
+    public static final String SYSPROP_FF_PROFILE_NAME = "qa.th.comm.FF_PROFILE_NAME";
 
     public static final String DEFAULT_FF_PROFILE_NAME = "default";
 

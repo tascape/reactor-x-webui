@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 public class SearchPage extends WebPage {
 
     @CacheLookup
-    @FindBy(id = "gbqfq")
+    @FindBy(id = "lst-ib")
     private WebElement searchBox;
 
     public void submitSearch(String term) {

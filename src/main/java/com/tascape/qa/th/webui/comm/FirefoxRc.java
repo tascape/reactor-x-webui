@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 tascape.
+ * Copyright 2015 - 2016 Nebula Bay.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 public class FirefoxRc extends WebBrowserRc {
     private static final Logger LOG = LoggerFactory.getLogger(FirefoxRc.class);
 
-    public static final String SYSPROP_FF_PROFILE_FOLDER = "qa.comm.FF_PROFILE_FOLDER";
+    public static final String SYSPROP_FF_PROFILE_FOLDER = "qa.th.comm.FF_PROFILE_FOLDER";
 
     public static final String DEFAULT_FF_PROFILE_FOLDER = "/qa/firefox/profile/default";
 
