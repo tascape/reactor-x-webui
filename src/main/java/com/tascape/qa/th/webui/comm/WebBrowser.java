@@ -17,6 +17,7 @@ package com.tascape.qa.th.webui.comm;
 
 import com.tascape.qa.th.SystemConfiguration;
 import com.tascape.qa.th.comm.EntityCommunication;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +26,9 @@ import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -97,6 +100,10 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     public void get(String url) {
         LOG.debug("Open url {}", url);
         this.webDriver.get(url);
+    }
+
+    public File takeBrowerScreenshot() {
+        return ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
     }
 
     public abstract int getPageLoadTimeMillis(String url) throws Exception;

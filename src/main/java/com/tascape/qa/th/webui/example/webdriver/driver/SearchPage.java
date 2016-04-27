@@ -15,7 +15,7 @@
  */
 package com.tascape.qa.th.webui.example.webdriver.driver;
 
-import com.tascape.qa.th.webui.driver.WebPage;
+import com.tascape.qa.th.webui.driver.Page;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author linsong wang
  */
-public class SearchPage extends WebPage {
+public class SearchPage extends Page {
 
     @CacheLookup
     @FindBy(id = "lst-ib")

@@ -15,15 +15,14 @@
  */
 package com.tascape.qa.th.webui.example.webdriver.driver;
 
-import com.tascape.qa.th.driver.EntityDriver;
 import com.tascape.qa.th.webui.comm.WebBrowser;
-import com.tascape.qa.th.webui.driver.WebPage;
+import com.tascape.qa.th.webui.driver.App;
 
 /**
  *
  * @author linsong wang
  */
-public class GoogleSearchUi extends EntityDriver {
+public class GoogleSearchUi extends App {
 
     @Override
     public String getName() {
@@ -36,7 +35,7 @@ public class GoogleSearchUi extends EntityDriver {
     }
 
     public void search(String term) throws Exception {
-        SearchPage searchPage = WebPage.getPage(SearchPage.class, this);
+        SearchPage searchPage = App.getPage(SearchPage.class, this);
         searchPage.get();
         searchPage.submitSearch(term);
     }
@@ -44,7 +43,12 @@ public class GoogleSearchUi extends EntityDriver {
     @Override
     public void reset() throws Exception {
         WebBrowser browser = WebBrowser.class.cast(this.getEntityCommunication());
-        SearchPage searchPage = WebPage.getPage(SearchPage.class, this);
+        SearchPage searchPage = App.getPage(SearchPage.class, this);
         searchPage.get();
+    }
+
+    @Override
+    public int getLaunchDelayMillis() {
+        return 5000;
     }
 }

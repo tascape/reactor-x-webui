@@ -43,5 +43,6 @@ public class TestClassGoogleSearch extends JUnit4Test {
         TestIterationData data = this.getTestData(TestIterationData.class);
         this.searchUi.search("test automation " + data.getIteration());
         Utils.sleep(5000, "wait");
+        searchUi.takeScreenshot();
     }
 }
