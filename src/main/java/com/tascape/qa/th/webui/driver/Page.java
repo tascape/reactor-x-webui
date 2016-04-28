@@ -41,9 +41,23 @@ public abstract class Page extends LoadableComponent<Page> {
     @FindBy(tagName = "body")
     protected WebElement body;
 
+    /**
+     * Get the relative path of this page.
+     *
+     * @return such as /photos/edit.html
+     */
+    public abstract String getPath();
+
     void setApp(App app) {
         this.app = app;
         this.webBrowser = app.getWebBrowser();
+    }
+
+    @Override
+    protected void load() {
+        String url = app.getBaseUrl() + this.getPath();
+        LOG.debug("load page {}", url);
+        this.webBrowser.get(url);
     }
 
     public void setSelect(WebElement select, String visibleText) {

@@ -15,18 +15,17 @@
  */
 package com.tascape.qa.th.webui.example.webdriver.driver;
 
-import com.tascape.qa.th.webui.comm.WebBrowser;
 import com.tascape.qa.th.webui.driver.App;
 
 /**
  *
  * @author linsong wang
  */
-public class GoogleSearchUi extends App {
+public class GoogleDotCom extends App {
 
     @Override
     public String getName() {
-        return "Google Search UI";
+        return "google.com";
     }
 
     @Override
@@ -35,16 +34,12 @@ public class GoogleSearchUi extends App {
     }
 
     public void search(String term) throws Exception {
-        SearchPage searchPage = App.getPage(SearchPage.class, this);
-        searchPage.get();
+        SearchPage searchPage = this.open(SearchPage.class);
         searchPage.submitSearch(term);
     }
 
     @Override
     public void reset() throws Exception {
-        WebBrowser browser = WebBrowser.class.cast(this.getEntityCommunication());
-        SearchPage searchPage = App.getPage(SearchPage.class, this);
-        searchPage.get();
     }
 
     @Override

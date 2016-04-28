@@ -15,14 +15,14 @@
  */
 package com.tascape.qa.th.webui.driver;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.tascape.qa.th.Utils;
 import com.tascape.qa.th.driver.EntityDriver;
 import com.tascape.qa.th.exception.EntityCommunicationException;
 import com.tascape.qa.th.webui.comm.WebBrowser;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.LoggerFactory;
@@ -37,27 +37,34 @@ public abstract class App extends EntityDriver {
 
     protected WebBrowser webBrowser;
 
-    public abstract int getLaunchDelayMillis();
-
-    private static final Table<Class<? extends Page>, App, Page> PAGES = HashBasedTable.create();
-
-    public static synchronized <T extends Page> T getPage(Class<T> pageClass, App app)
-        throws EntityCommunicationException {
-        Page pageLoaded = PAGES.get(pageClass, app);
-        if (pageLoaded != null) {
-            return pageClass.cast(pageLoaded);
-        }
-        T page = PageFactory.initElements(app.getWebBrowser().getWebDriver(), pageClass);
-        page.setApp(app);
-        PAGES.put(pageClass, app, page);
-        return page;
-    }
-
     protected String version;
 
-    public void launch(String url) throws Exception {
-        webBrowser.close();
-        webBrowser.get(url);
+    private String baseUrl;
+
+    private  final Map<Class<? extends Page>, Page> loadedPages = new HashMap<>();
+
+    public <T extends Page> T open(Class<T> pageClass)
+        throws EntityCommunicationException {
+        Page page = loadedPages.get(pageClass);
+        if (page == null) {
+            page = PageFactory.initElements(webBrowser.getWebDriver(), pageClass);
+            page.setApp(this);
+            loadedPages.put(pageClass, page);
+        }
+        page.get();
+        return pageClass.cast(page);
+    }
+
+    /**
+     * Launches web app with base URL.
+     *
+     * @param baseUrl such as https://google.com
+     *
+     * @throws InterruptedException in case of error
+     */
+    public void launch(String baseUrl) throws InterruptedException {
+        this.baseUrl = baseUrl;
+        webBrowser.get(baseUrl);
         Utils.sleep(this.getLaunchDelayMillis(), "Wait for app launch");
     }
 
@@ -68,6 +75,12 @@ public abstract class App extends EntityDriver {
     public void setWebBrowser(WebBrowser webBrowser) {
         this.webBrowser = webBrowser;
     }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public abstract int getLaunchDelayMillis();
 
     public File takeScreenshot() {
         long start = System.currentTimeMillis();

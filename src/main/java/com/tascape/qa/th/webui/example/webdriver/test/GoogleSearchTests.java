@@ -15,34 +15,39 @@
  */
 package com.tascape.qa.th.webui.example.webdriver.test;
 
-import com.tascape.qa.th.webui.example.webdriver.driver.GoogleSearchUi;
+import com.tascape.qa.th.webui.example.webdriver.driver.GoogleDotCom;
 import com.tascape.qa.th.Utils;
 import com.tascape.qa.th.data.TestDataProvider;
 import com.tascape.qa.th.data.TestIterationData;
 import com.tascape.qa.th.driver.TestDriver;
-import com.tascape.qa.th.test.JUnit4Test;
+import com.tascape.qa.th.test.AbstractTest;
 import org.junit.Test;
 
 /**
  *
  * @author linsong wang
  */
-public class TestClassGoogleSearch extends JUnit4Test {
+public class GoogleSearchTests extends AbstractTest {
 
-    public static final TestDriver SEARCH_UI = new TestDriver(TestClassGoogleSearch.class, GoogleSearchUi.class);
+    public static final TestDriver GOOGLE_DOT_COM = new TestDriver(GoogleSearchTests.class, GoogleDotCom.class);
 
-    private final GoogleSearchUi searchUi;
+    private final GoogleDotCom google;
 
-    public TestClassGoogleSearch() {
-        this.searchUi = super.getEntityDriver(SEARCH_UI);
+    public GoogleSearchTests() {
+        this.google = super.getEntityDriver(GOOGLE_DOT_COM);
     }
 
     @Test
     @TestDataProvider(klass = TestIterationData.class, method = "useIterations", parameter = "4")
     public void testSearch() throws Exception {
         TestIterationData data = this.getTestData(TestIterationData.class);
-        this.searchUi.search("test automation " + data.getIteration());
+        this.google.search("com.tascape.qa " + data.getIteration());
         Utils.sleep(5000, "wait");
-        searchUi.takeScreenshot();
+        google.takeScreenshot();
+    }
+
+    @Override
+    public String getApplicationUnderTest() {
+        return google.getName();
     }
 }

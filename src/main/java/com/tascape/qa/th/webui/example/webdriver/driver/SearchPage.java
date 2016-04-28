@@ -38,8 +38,8 @@ public class SearchPage extends Page {
     }
 
     @Override
-    protected void load() {
-        this.webBrowser.get("http://google.com");
+    public String getPath() {
+        return "";
     }
 
     @Override

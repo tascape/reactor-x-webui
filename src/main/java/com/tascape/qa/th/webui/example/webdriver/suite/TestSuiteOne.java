@@ -15,8 +15,8 @@
  */
 package com.tascape.qa.th.webui.example.webdriver.suite;
 
-import com.tascape.qa.th.webui.example.webdriver.driver.GoogleSearchUi;
-import com.tascape.qa.th.webui.example.webdriver.test.TestClassGoogleSearch;
+import com.tascape.qa.th.webui.example.webdriver.driver.GoogleDotCom;
+import com.tascape.qa.th.webui.example.webdriver.test.GoogleSearchTests;
 import com.tascape.qa.th.webui.comm.WebBrowser;
 import com.tascape.qa.th.suite.AbstractSuite;
 
@@ -28,6 +28,8 @@ public class TestSuiteOne extends AbstractSuite {
 
     private WebBrowser browser;
 
+    private final GoogleDotCom google = new GoogleDotCom();
+
     @Override
     public String getName() {
         return "Web Driver Test Suite Example One";
@@ -35,22 +37,22 @@ public class TestSuiteOne extends AbstractSuite {
 
     @Override
     public void setUpTestClasses() {
-        this.addTestClass(TestClassGoogleSearch.class);
+        this.addTestClass(GoogleSearchTests.class);
     }
 
     @Override
     public String getProductUnderTest() {
-        return "na";
+        return google.getName();
     }
 
     @Override
     protected void setUpEnvironment() throws Exception {
         browser = WebBrowser.newFirefox(false);
         browser.landscape();
-        GoogleSearchUi search = new GoogleSearchUi();
-        search.setWebBrowser(browser);
+        google.setWebBrowser(browser);
+        google.launch("https://www.google.com");
 
-        this.putTestDirver(TestClassGoogleSearch.SEARCH_UI, search);
+        this.putTestDirver(GoogleSearchTests.GOOGLE_DOT_COM, google);
     }
 
     @Override
