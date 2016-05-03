@@ -24,7 +24,7 @@
         <dependency>
             <groupId>com.tascape.qa</groupId>
             <artifactId>testharness</artifactId>
-            <version>[1.1.6, 1.2.0)</version>
+            <version>[1.1.7, 1.2.0)</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
