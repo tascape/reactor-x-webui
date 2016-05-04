@@ -67,6 +67,11 @@ public abstract class App extends EntityDriver {
         webBrowser.get(baseUrl);
         Utils.sleep(this.getLaunchDelayMillis(), "Wait for app launch");
     }
+    
+    public void relaunch() throws InterruptedException {
+        webBrowser.get(baseUrl);
+        Utils.sleep(this.getLaunchDelayMillis(), "Wait for app re-launch");        
+    }
 
     public WebBrowser getWebBrowser() {
         return webBrowser;
