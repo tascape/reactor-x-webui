@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
  * @author linsong wang
  */
 @SuppressWarnings("ProtectedField")
-public abstract class App extends EntityDriver {
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(App.class);
+public abstract class WebApp extends EntityDriver {
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(WebApp.class);
 
     protected WebBrowser webBrowser;
 
@@ -41,11 +41,11 @@ public abstract class App extends EntityDriver {
 
     private String baseUrl;
 
-    private  final Map<Class<? extends Page>, Page> loadedPages = new HashMap<>();
+    private  final Map<Class<? extends WebPage>, WebPage> loadedPages = new HashMap<>();
 
-    public <T extends Page> T open(Class<T> pageClass)
+    public <T extends WebPage> T open(Class<T> pageClass)
         throws EntityCommunicationException {
-        Page page = loadedPages.get(pageClass);
+        WebPage page = loadedPages.get(pageClass);
         if (page == null) {
             page = PageFactory.initElements(webBrowser.getWebDriver(), pageClass);
             page.setApp(this);
@@ -97,7 +97,7 @@ public abstract class App extends EntityDriver {
             LOG.trace("time {} ms", System.currentTimeMillis() - start);
             return png;
         } catch (IOException ex) {
-            throw new UIAException("Cannot take screenshot", ex);
+            throw new WebUiException("Cannot take screenshot", ex);
         }
     }
 }

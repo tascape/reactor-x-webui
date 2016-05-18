@@ -30,10 +30,10 @@ import org.slf4j.LoggerFactory;
  * @author linsong wang
  */
 @SuppressWarnings("ProtectedField")
-public abstract class Page extends LoadableComponent<Page> {
-    private static final Logger LOG = LoggerFactory.getLogger(Page.class);
+public abstract class WebPage extends LoadableComponent<WebPage> {
+    private static final Logger LOG = LoggerFactory.getLogger(WebPage.class);
 
-    protected App app;
+    protected WebApp app;
 
     protected WebBrowser webBrowser;
 
@@ -48,7 +48,7 @@ public abstract class Page extends LoadableComponent<Page> {
      */
     public abstract String getPath();
 
-    void setApp(App app) {
+    void setApp(WebApp app) {
         this.app = app;
         this.webBrowser = app.getWebBrowser();
     }

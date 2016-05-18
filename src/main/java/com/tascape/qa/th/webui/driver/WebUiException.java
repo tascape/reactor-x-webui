@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 tascape.
+ * Copyright 2015 - 2016 Nebula Bay.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,14 @@ package com.tascape.qa.th.webui.driver;
  *
  * @author linsong wang
  */
-public class UIAException extends RuntimeException {
+public class WebUiException extends RuntimeException {
     private static final long serialVersionUID = 8493532L;
 
-    public UIAException(String message) {
+    public WebUiException(String message) {
         super(message);
     }
 
-    public UIAException(String message, Throwable ex) {
+    public WebUiException(String message, Throwable ex) {
         super(message, ex);
     }
 }
