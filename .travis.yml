@@ -6,7 +6,3 @@ branches:
     - master 
 
 script: mvn clean install
-
-cache:
-  directories:
-    - $HOME/.m2
