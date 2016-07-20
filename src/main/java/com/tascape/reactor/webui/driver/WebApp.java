@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tascape.qa.th.webui.driver;
+package com.tascape.reactor.webui.driver;
 
-import com.tascape.qa.th.Utils;
-import com.tascape.qa.th.driver.EntityDriver;
-import com.tascape.qa.th.exception.EntityCommunicationException;
-import com.tascape.qa.th.webui.comm.WebBrowser;
+import com.tascape.reactor.Utils;
+import com.tascape.reactor.driver.EntityDriver;
+import com.tascape.reactor.exception.EntityCommunicationException;
+import com.tascape.reactor.webui.comm.WebBrowser;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;

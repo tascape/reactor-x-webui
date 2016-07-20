@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tascape.qa.th.webui.suite;
+package com.tascape.reactor.webui.suite;
 
-import com.tascape.qa.th.suite.AbstractSuite;
+import com.tascape.reactor.suite.AbstractSuite;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 import org.slf4j.Logger;

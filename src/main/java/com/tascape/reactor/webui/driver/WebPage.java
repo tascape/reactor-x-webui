@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tascape.qa.th.webui.driver;
+package com.tascape.reactor.webui.driver;
 
-import com.tascape.qa.th.webui.comm.WebBrowser;
+import com.tascape.reactor.webui.comm.WebBrowser;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tascape.qa.th.webui.comm;
+package com.tascape.reactor.webui.comm;
 
-import com.tascape.qa.th.SystemConfiguration;
-import com.tascape.qa.th.Utils;
+import com.tascape.reactor.SystemConfiguration;
+import com.tascape.reactor.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tascape.qa.th.webui.test;
+package com.tascape.reactor.webui.test;
 
-import com.tascape.qa.th.webui.comm.Firefox;
-import com.tascape.qa.th.webui.suite.SeleniumIdeSuite;
-import com.tascape.qa.th.test.AbstractTest;
+import com.tascape.reactor.webui.comm.Firefox;
+import com.tascape.reactor.webui.suite.SeleniumIdeSuite;
+import com.tascape.reactor.test.AbstractTest;
 import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.server.RemoteControlConfiguration;

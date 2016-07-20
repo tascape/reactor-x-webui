@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tascape.qa.th.webui.comm;
+package com.tascape.reactor.webui.comm;
 
-import com.tascape.qa.th.comm.EntityCommunication;
+import com.tascape.reactor.comm.EntityCommunication;
 import com.thoughtworks.selenium.DefaultSelenium;
 import org.openqa.selenium.server.SeleniumServer;
 import org.slf4j.Logger;

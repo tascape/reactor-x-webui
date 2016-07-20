@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.tascape.qa</groupId>
-    <artifactId>thx-webui</artifactId>
-    <version>1.1.4</version>  
+    <groupId>com.tascape</groupId>
+    <artifactId>reactor-x-webui</artifactId>
+    <version>1.2.0</version>  
     <packaging>jar</packaging>
 
-    <name>thx-webui</name>
-    <description>TestHarness Extension for Web UI</description>
+    <name>reactor-x-webui</name>
+    <description>Reactor Extension for Web UI Automation</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,23 +22,28 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.tascape.qa</groupId>
-            <artifactId>testharness</artifactId>
-            <version>1.1.9</version>
+            <groupId>com.tascape</groupId>
+            <artifactId>reactor</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tascape</groupId>
+            <artifactId>reactor-ui</artifactId>
+            <version>1.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-            <version>2.53.0</version>
+            <version>2.53.1</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>2.53.0</version>
+            <version>2.53.1</version>
         </dependency>
     </dependencies>
 
-    <url>https://github.com/tascape/thx-webui</url>
+    <url>https://github.com/tascape/reactor-x-webui</url>
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
@@ -54,9 +59,9 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git@github.com:tascape/thx-webui.git</connection>
-        <developerConnection>scm:git:git@github.com:tascape/thx-webui.git</developerConnection>
-        <url>git:git@github.com:tascape/thx-webui.git</url>
+        <connection>scm:git:git@github.com:tascape/reactor-x-webui.git</connection>
+        <developerConnection>scm:git:git@github.com:tascape/reactor-x-webui.git</developerConnection>
+        <url>git:git@github.com:tascape/reactor-x-webui.git</url>
     </scm>
 
     <build>
