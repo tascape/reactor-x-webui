@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tascape.reactor.webui.test;
+package com.tascape.reactor.webui.task;
 
 import com.tascape.reactor.webui.comm.Firefox;
 import com.tascape.reactor.webui.suite.SeleniumIdeSuite;
@@ -30,12 +30,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author linsong wang
  */
-public abstract class SeleniumIdeTests extends AbstractCase {
-    private static final Logger LOG = LoggerFactory.getLogger(SeleniumIdeTests.class);
+public abstract class SeleniumIdeCases extends AbstractCase {
+    private static final Logger LOG = LoggerFactory.getLogger(SeleniumIdeCases.class);
 
     private final SeleniumServer seleniumServer;
 
-    public SeleniumIdeTests() throws Exception {
+    public SeleniumIdeCases() throws Exception {
         RemoteControlConfiguration rcc = new RemoteControlConfiguration();
         rcc.setTrustAllSSLCertificates(true);
         this.seleniumServer = SeleniumIdeSuite.getSeleniumServer();
@@ -46,9 +46,9 @@ public abstract class SeleniumIdeTests extends AbstractCase {
         tempDir.mkdir();
         File suite = File.createTempFile("selenium-ide-temp-suite-", ".html", tempDir);
         suite.deleteOnExit();
-        String content = TEST_SUITE_TEMPLATE.replaceAll("XXXXXXXXXXXXXXXXXXXX", html.getName());
+        String content = SUITE_TEMPLATE.replaceAll("XXXXXXXXXXXXXXXXXXXX", html.getName());
         FileUtils.write(suite, content);
-        LOG.debug("Temp test suite file {}", suite.getAbsolutePath());
+        LOG.debug("Temp suite file {}", suite.getAbsolutePath());
 
         File result = this.saveIntoFile("ide-result", "html", "");
         this.captureScreens(2000);
@@ -63,16 +63,16 @@ public abstract class SeleniumIdeTests extends AbstractCase {
         return "PASSED".equals(pf);
     }
 
-    private static final String TEST_SUITE_TEMPLATE = new StringBuilder()
+    private static final String SUITE_TEMPLATE = new StringBuilder()
             .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
             .append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" ")
             .append("http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n")
             .append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n")
             .append("<head>\n")
             .append("  <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\" />\n")
-            .append("  <title>Test Suite</title>\n" + "</head>\n" + "<body>\n")
+            .append("  <title>Suite</title>\n" + "</head>\n" + "<body>\n")
             .append("<table id=\"suiteTable\" cellpadding=\"1\" cellspacing=\"1\" border=\"1\" class=\"selenium\"><tbody>\n")
-            .append("<tr><td><b>Test Suite</b></td></tr>\n")
+            .append("<tr><td><b>Suite</b></td></tr>\n")
             .append("<tr><td><a href=\"../XXXXXXXXXXXXXXXXXXXX\">XXXXXXXXXXXXXXXXXXXX</a></td></tr>\n")
             .append("</tbody></table>\n" + "</body>\n" + "</html>").toString();
 
