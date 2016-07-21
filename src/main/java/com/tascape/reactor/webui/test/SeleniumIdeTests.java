@@ -17,7 +17,7 @@ package com.tascape.reactor.webui.test;
 
 import com.tascape.reactor.webui.comm.Firefox;
 import com.tascape.reactor.webui.suite.SeleniumIdeSuite;
-import com.tascape.reactor.test.AbstractTest;
+import com.tascape.reactor.task.AbstractCase;
 import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.server.RemoteControlConfiguration;
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author linsong wang
  */
-public abstract class SeleniumIdeTests extends AbstractTest {
+public abstract class SeleniumIdeTests extends AbstractCase {
     private static final Logger LOG = LoggerFactory.getLogger(SeleniumIdeTests.class);
 
     private final SeleniumServer seleniumServer;
