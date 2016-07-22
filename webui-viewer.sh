@@ -2,4 +2,4 @@
 
 mvn clean install
 
-java -cp target/*:target/dependency/* com.tascape.qa.th.webui.tools.WebSUiViewer
+java -cp target/*:target/dependency/* com.tascape.reactor.webui.tools.WebSUiViewer
