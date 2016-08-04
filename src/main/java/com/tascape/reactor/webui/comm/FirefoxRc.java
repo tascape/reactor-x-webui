@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 public class FirefoxRc extends WebBrowserRc {
     private static final Logger LOG = LoggerFactory.getLogger(FirefoxRc.class);
 
-    public static final String SYSPROP_FF_PROFILE_FOLDER = "qa.th.comm.FF_PROFILE_FOLDER";
+    public static final String SYSPROP_FF_PROFILE_FOLDER = "reactor.comm.FF_PROFILE_FOLDER";
 
-    public static final String DEFAULT_FF_PROFILE_FOLDER = "/qa/firefox/profile/default";
+    public static final String DEFAULT_FF_PROFILE_FOLDER = "~/.firefox/profile/default";
 
     @Override
     public SeleniumServer initServer() {

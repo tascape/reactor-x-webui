@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 public abstract class WebBrowser extends EntityCommunication implements WebDriver {
     private static final Logger LOG = LoggerFactory.getLogger(WebBrowser.class);
 
-    public static final String SYSPROP_WEBBROWSER_TYPE = "qa.th.comm.WEBBROWSER_TYPE";
+    public static final String SYSPROP_WEBBROWSER_TYPE = "reactor.comm.WEBBROWSER_TYPE";
 
     public static final int AJAX_TIMEOUT_SECONDS = 180;
 
