@@ -1,5 +1,6 @@
 /*
- * Copyright 2015 - 2016 Nebula Bay.
+ * Copyright (c) 2015 - present Nebula Bay.
+ * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +23,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
@@ -77,13 +80,13 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public static Chrome newChrome(boolean extEnabled) {
         Chrome wb = new Chrome();
-        wb.setDefaults();
+        wb.setDefaultTimeouts();
         return wb;
     }
 
     public static Firefox newFirefox(boolean extEnabled) throws Exception {
         Firefox wb = new Firefox(extEnabled);
-        wb.setDefaults();
+        wb.setDefaultTimeouts();
         return wb;
     }
 
@@ -102,8 +105,23 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         this.webDriver.get(url);
     }
 
-    public File takeBrowerScreenshot() {
-        return ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
+    public File takeBrowerScreenshot() throws IOException {
+        File ss = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
+        File f = this.getLogPath().resolve(ss.getName()).toFile();
+        LOG.debug("Screenshot {}", f.getAbsolutePath());
+        FileUtils.moveFile(ss, f);
+        return ss;
+    }
+
+    /**
+     * Clears input area with CTRL-A and DELETE.
+     *
+     * @param textBox text input element
+     */
+    public void clear(WebElement textBox) {
+        textBox.clear();
+        textBox.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        textBox.sendKeys(Keys.DELETE);
     }
 
     public abstract int getPageLoadTimeMillis(String url) throws Exception;
@@ -252,12 +270,11 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         });
     }
 
-    protected void setDefaults() {
+    public void setDefaultTimeouts() {
         this.actions = new Actions(this.webDriver);
-        this.webDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
-        this.webDriver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
-        this.webDriver.manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);
-        this.hide();
+        this.webDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+        this.webDriver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
+        this.webDriver.manage().timeouts().setScriptTimeout(60, TimeUnit.SECONDS);
     }
 
     public WebDriver getWebDriver() {

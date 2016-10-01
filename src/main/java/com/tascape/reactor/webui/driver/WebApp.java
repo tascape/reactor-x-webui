@@ -1,5 +1,6 @@
 /*
- * Copyright 2015 - 2016 Nebula Bay.
+ * Copyright (c) 2015 - present Nebula Bay.
+ * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ public abstract class WebApp extends EntityDriver {
 
     private String baseUrl;
 
-    private  final Map<Class<? extends WebPage>, WebPage> loadedPages = new HashMap<>();
+    private final Map<Class<? extends WebPage>, WebPage> loadedPages = new HashMap<>();
 
     public <T extends WebPage> T open(Class<T> pageClass)
         throws EntityCommunicationException {
@@ -67,10 +67,10 @@ public abstract class WebApp extends EntityDriver {
         webBrowser.get(baseUrl);
         Utils.sleep(this.getLaunchDelayMillis(), "Wait for app launch");
     }
-    
+
     public void relaunch() throws InterruptedException {
         webBrowser.get(baseUrl);
-        Utils.sleep(this.getLaunchDelayMillis(), "Wait for app re-launch");        
+        Utils.sleep(this.getLaunchDelayMillis(), "Wait for app re-launch");
     }
 
     public WebBrowser getWebBrowser() {
@@ -79,6 +79,7 @@ public abstract class WebApp extends EntityDriver {
 
     public void setWebBrowser(WebBrowser webBrowser) {
         this.webBrowser = webBrowser;
+        this.webBrowser.setDriver(this);
     }
 
     public String getBaseUrl() {
@@ -87,17 +88,12 @@ public abstract class WebApp extends EntityDriver {
 
     public abstract int getLaunchDelayMillis();
 
-    public File takeScreenshot() {
-        long start = System.currentTimeMillis();
-        LOG.debug("Take screenshot");
+    public File takeBrowerScreenshot() {
         try {
-            File png = this.saveIntoFile("ss", "png", "");
-            File f = webBrowser.takeBrowerScreenshot();
-            FileUtils.copyFile(f, png);
-            LOG.trace("time {} ms", System.currentTimeMillis() - start);
-            return png;
+            return webBrowser.takeBrowerScreenshot();
         } catch (IOException ex) {
-            throw new WebUiException("Cannot take screenshot", ex);
+            LOG.warn("Cannot take browser screenshot {}", ex.getMessage());
         }
+        return null;
     }
 }

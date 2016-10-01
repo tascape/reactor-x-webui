@@ -1,5 +1,6 @@
 /*
- * Copyright 2015 - 2016 Nebula Bay.
+ * Copyright (c) 2015 - present Nebula Bay.
+ * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +31,7 @@ import org.json.JSONObject;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +78,10 @@ public class Firefox extends WebBrowser {
             this.firebug = new Firebug();
             this.firebug.updateProfile(profile);
         }
+
+        DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+        capabilities.setCapability("marionette", true);
+
         long end = System.currentTimeMillis() + 180000;
         while (System.currentTimeMillis() < end) {
             try {
@@ -109,8 +115,8 @@ public class Firefox extends WebBrowser {
         private final String tokenNetExport = UUID.randomUUID().toString();
 
         private final Path harPath = sysConfig.getLogPath()
-                .resolve(sysConfig.getExecId())
-                .resolve(SystemConfiguration.CONSTANT_LOG_KEEP_ALIVE_PREFIX + "har-" + System.currentTimeMillis());
+            .resolve(sysConfig.getExecId())
+            .resolve(SystemConfiguration.CONSTANT_LOG_KEEP_ALIVE_PREFIX + "har-" + System.currentTimeMillis());
 
         public void clearHarDir() throws IOException {
             File[] hars = this.harPath.toFile().listFiles((File dir, String name) -> name.endsWith(".har"));
@@ -122,7 +128,7 @@ public class Firefox extends WebBrowser {
         }
 
         public int getPageLoadTimeMillis(String url)
-                throws IOException, JSONException, InterruptedException, ParseException {
+            throws IOException, JSONException, InterruptedException, ParseException {
             Utils.sleep(2000, "");
             this.clearHarDir();
             Firefox.this.get(url);
@@ -200,13 +206,13 @@ public class Firefox extends WebBrowser {
             profile.setPreference(domain + "allPagesActivation", "on");
             profile.setPreference(domain + "defaultPanelName", "net");
             profile.setPreference(domain + "net.enableSites", true);
-            profile.setPreference(domain + "netexport.alwaysEnableAutoExport", true);
-            profile.setPreference(domain + "netexport.autoExportToFile", true);
-            profile.setPreference(domain + "netexport.showPreview", false);
-            profile.setPreference(domain + "netexport.timeout", 180000); // default 60000
-            profile.setPreference(domain + "netexport.pageLoadedTimeout", 1500); // default 1500
-            profile.setPreference(domain + "netexport.secretToken", tokenNetExport);
-            profile.setPreference(domain + "netexport.defaultLogDir", harPath.toFile().getAbsolutePath());
+            profile.setPreference(domain + "extensions.netmonitor.har.autoConnect", true);
+            profile.setPreference(domain + "extensions.netmonitor.har.contentAPIToken", tokenNetExport);
+            profile.setPreference(domain + "devtools.netmonitor.har.enableAutoExportToFile", true);
+            profile.setPreference(domain + "devtools.netmonitor.har.defaultLogDir", harPath.toFile().getAbsolutePath());
+            profile.setPreference(domain + "devtools.netmonitor.har.pageLoadedTimeout", 1500); // default 1500
+//            profile.setPreference(domain + "netexport.showPreview", false);
+//            profile.setPreference(domain + "netexport.timeout", 180000); // default 60000
         }
     }
 
