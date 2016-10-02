@@ -16,10 +16,11 @@
  */
 package com.tascape.reactor.webui.comm;
 
-import com.tascape.reactor.SystemConfiguration;
 import com.tascape.reactor.Utils;
+import com.tascape.reactor.driver.EntityDriver;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.LinkedList;
@@ -49,6 +50,10 @@ public class Firefox extends WebBrowser {
     public static final String SYSPROP_FF_PROFILE_NAME = "reactor.comm.FF_PROFILE_NAME";
 
     public static final String DEFAULT_FF_PROFILE_NAME = "default";
+
+    public static interface Extension {
+        public void updateProfile(FirefoxProfile profile);
+    }
 
     private Firebug firebug = null;
 
@@ -114,25 +119,17 @@ public class Firefox extends WebBrowser {
     public class Firebug implements Extension {
         private final String tokenNetExport = UUID.randomUUID().toString();
 
-        private final Path harPath = sysConfig.getLogPath()
-            .resolve(sysConfig.getExecId())
-            .resolve(SystemConfiguration.CONSTANT_LOG_KEEP_ALIVE_PREFIX + "har-" + System.currentTimeMillis());
+        private final Path harPath = Firefox.this.getLogPath();
 
-        public void clearHarDir() throws IOException {
-            File[] hars = this.harPath.toFile().listFiles((File dir, String name) -> name.endsWith(".har"));
-            if (hars != null) {
-                for (File f : hars) {
-                    f.delete();
-                }
-            }
-        }
-
-        public int getPageLoadTimeMillis(String url)
-            throws IOException, JSONException, InterruptedException, ParseException {
-            Utils.sleep(2000, "");
-            this.clearHarDir();
+        public int getPageLoadTimeMillis(String url) throws IOException, JSONException, InterruptedException,
+            ParseException {
+            this.doNetClear();
+            EntityDriver driver = Firefox.this.getDriver();
             Firefox.this.get(url);
             JSONObject json = this.waitForFirebugNetExport();
+            if (driver != null) {
+                driver.captureScreen();
+            }
             return HarLog.parse(json).getOverallLoadTimeMillis();
         }
 
@@ -140,84 +137,71 @@ public class Firefox extends WebBrowser {
             this.doNetClear();
             ajax.doRequest();
             Utils.sleep(5000, "Wait for ajax to load");
-            try {
-                if (ajax.getByDisapper() != null) {
-                    Firefox.this.waitForNoElement(ajax.getByDisapper(), AJAX_TIMEOUT_SECONDS);
-                }
-                if (ajax.getByAppear() != null) {
-                    Firefox.this.waitForElement(ajax.getByAppear(), AJAX_TIMEOUT_SECONDS);
-                }
-                if (ajax.getByDisapper() == null && ajax.getByAppear() == null) {
-                    Utils.sleep(5000, "Wait for ajax to load");
-                }
-            } finally {
-                this.clearHarDir();
-                this.doNetExport();
+            if (ajax.getByDisapper() != null) {
+                Firefox.this.waitForNoElement(ajax.getByDisapper(), AJAX_TIMEOUT_SECONDS);
+            }
+            if (ajax.getByAppear() != null) {
+                Firefox.this.waitForElement(ajax.getByAppear(), AJAX_TIMEOUT_SECONDS);
+            }
+            if (ajax.getByDisapper() == null && ajax.getByAppear() == null) {
+                Utils.sleep(5000, "Wait for ajax to load");
             }
             JSONObject json = this.waitForFirebugNetExport();
             return HarLog.parse(json).getOverallLoadTimeMillis();
         }
 
-        private void doNetClear() {
-            String js = "window.NetExport.clear(\"" + tokenNetExport + "\")";
+        private void doNetClear() throws InterruptedException {
+            String var = "var options = {token: \"" + tokenNetExport + "\"};";
+            String js = var + "HAR.clear(options);";
             Firefox.this.executeScript(Void.class, js);
+            Utils.sleep(2000, "clear Net detail");
         }
 
-        private void doNetExport() {
-            String js = "window.NetExport.triggerExport(\"" + tokenNetExport + "\")";
+        private String doNetExport() {
+            String har = UUID.randomUUID().toString();
+            String var = "var options = {token: \"" + tokenNetExport + "\", fileName: \"" + har + "\"};";
+            String js = var + "HAR.triggerExport(options).then(result => {});";
             Firefox.this.executeScript(Void.class, js);
+            return har + ".har";
         }
 
         private JSONObject waitForFirebugNetExport() throws IOException, InterruptedException {
             long end = System.currentTimeMillis() + FIREBUG_PAGELOADEDTIMEOUT_MILLI;
-            File[] harFiles = {};
+            File har = harPath.resolve(this.doNetExport()).toFile();
+            long size = -1;
             while (System.currentTimeMillis() < end) {
-                Utils.sleep(10000, "Wait for netexport http archive file");
-                try {
-                    File[] hars = this.harPath.toFile().listFiles((File dir, String name) -> name.endsWith(".har"));
-                    if (hars == null || hars.length == 0) {
-                        continue;
+                if (har.exists()) {
+                    long sizeCurrent = har.length();
+                    if (size > 0 && size == sizeCurrent) {
+                        JSONObject json = new JSONObject(FileUtils.readFileToString(har, Charset.defaultCharset()));
+                        File harTxt = Firefox.this.getLogPath().resolve("net-export.txt").toFile();
+                        FileUtils.copyFile(har, harTxt);
+                        LOG.debug("net export data {}", harTxt.getAbsolutePath());
+                        return json;
+                    } else {
+                        LOG.debug("har file size {} bytes", sizeCurrent);
+                        size = sizeCurrent;
                     }
-                    if (hars.length != harFiles.length) {
-                        harFiles = hars;
-                        continue;
-                    }
-
-                    this.clearHarDir();
-                    this.doNetExport();
-                    hars = this.harPath.toFile().listFiles((File dir, String name) -> name.endsWith(".har"));
-                    File har = hars[0];
-                    LOG.debug("Load data from {}", har.getAbsolutePath());
-                    JSONObject json = new JSONObject(FileUtils.readFileToString(har));
-                    FileUtils.copyFile(har, this.harPath.resolve(har.getName() + ".json").toFile());
-                    this.clearHarDir();
-                    return json;
-                } catch (IOException | JSONException ex) {
-                    LOG.warn(ex.getMessage());
                 }
+                Utils.sleep(1000, "Wait for http archive file");
             }
             throw new IOException("Cannot load firebug netexport har file");
         }
 
+        // https://github.com/firebug/har-export-trigger
+        // https://addons.mozilla.org/en-US/firefox/addon/har-export-trigger/
         @Override
         public void updateProfile(FirefoxProfile profile) {
-            String domain = "extensions.firebug.";
-            profile.setPreference(domain + "onByDefault", true);
-            profile.setPreference(domain + "allPagesActivation", "on");
-            profile.setPreference(domain + "defaultPanelName", "net");
-            profile.setPreference(domain + "net.enableSites", true);
-            profile.setPreference(domain + "extensions.netmonitor.har.autoConnect", true);
-            profile.setPreference(domain + "extensions.netmonitor.har.contentAPIToken", tokenNetExport);
-            profile.setPreference(domain + "devtools.netmonitor.har.enableAutoExportToFile", true);
-            profile.setPreference(domain + "devtools.netmonitor.har.defaultLogDir", harPath.toFile().getAbsolutePath());
-            profile.setPreference(domain + "devtools.netmonitor.har.pageLoadedTimeout", 1500); // default 1500
-//            profile.setPreference(domain + "netexport.showPreview", false);
-//            profile.setPreference(domain + "netexport.timeout", 180000); // default 60000
+            profile.setPreference("extensions.firebug.onByDefault", true);
+            profile.setPreference("extensions.firebug.allPagesActivation", "on");
+            profile.setPreference("extensions.firebug.defaultPanelName", "net");
+            profile.setPreference("extensions.firebug.net.enableSites", true);
+            profile.setPreference("extensions.netmonitor.har.autoConnect", true);
+            profile.setPreference("extensions.netmonitor.har.contentAPIToken", tokenNetExport);
+            profile.setPreference("devtools.netmonitor.har.enableAutoExportToFile", true);
+            profile.setPreference("devtools.netmonitor.har.defaultLogDir", harPath.toFile().getAbsolutePath());
+            profile.setPreference("devtools.netmonitor.har.pageLoadedTimeout", 1500); // default 1500
         }
-    }
-
-    public static interface Extension {
-        public void updateProfile(FirefoxProfile profile);
     }
 }
 
@@ -388,11 +372,11 @@ class HarLog {
 
             public static Timings paser(JSONObject json) throws JSONException {
                 Timings o = new Timings();
-                o.blocked = json.getInt("blocked");
-                o.dns = json.getInt("dns");
-                o.send = json.getInt("send");
-                o.wait = json.getInt("wait");
-                o.receive = json.getInt("receive");
+                o.blocked = json.optInt("blocked");
+                o.dns = json.optInt("dns");
+                o.send = json.optInt("send");
+                o.wait = json.optInt("wait");
+                o.receive = json.optInt("receive");
                 return o;
             }
         }
@@ -401,7 +385,12 @@ class HarLog {
             Entry o = new Entry();
             o.pageref = json.getString("pageref");
             o.startedDateTime = json.getString("startedDateTime");
-            o.time = json.getInt("time");
+            try {
+                o.time = json.getInt("time");
+            } catch (JSONException ex) {
+                LOG.warn("{} has no load time, use 0 - {}", o.pageref, ex.getMessage());
+                o.time = 0;
+            }
             o.request = Request.parse(json.getJSONObject("request"));
             o.response = Response.parse(json.getJSONObject("response"));
             o.timings = Timings.paser(json.getJSONObject("timings"));
