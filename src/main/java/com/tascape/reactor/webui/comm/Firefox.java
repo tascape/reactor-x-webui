@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class Firefox extends WebBrowser {
     private static final Logger LOG = LoggerFactory.getLogger(Firefox.class);
 
-    public static final int FIREBUG_PAGELOADEDTIMEOUT_MILLI = 180000;
+    public static final int FIREBUG_PAGELOADEDTIMEOUT_MILLI = 60000;
 
     public static final String SYSPROP_FF_BINARY = "reactor.comm.FF_BINARY";
 
@@ -102,8 +102,9 @@ public class Firefox extends WebBrowser {
         }
     }
 
-    public Firebug getFirebug() {
-        return firebug;
+    @Override
+    public int getLastLoadTimeMillis() throws Exception {
+        return this.firebug.getLastPageLoadTimeMillis();
     }
 
     @Override
@@ -116,10 +117,19 @@ public class Firefox extends WebBrowser {
         return this.firebug.getAjaxLoadTimeMillis(ajax);
     }
 
-    public class Firebug implements Extension {
+    private class Firebug implements Extension {
         private final String tokenNetExport = UUID.randomUUID().toString();
 
         private final Path harPath = Firefox.this.getLogPath();
+
+        public int getLastPageLoadTimeMillis() throws IOException, JSONException, InterruptedException, ParseException {
+            JSONObject json = this.waitForFirebugNetExport();
+            EntityDriver driver = Firefox.this.getDriver();
+            if (driver != null) {
+                driver.captureScreen();
+            }
+            return HarLog.parse(json).getOverallLoadTimeMillis();
+        }
 
         public int getPageLoadTimeMillis(String url) throws IOException, JSONException, InterruptedException,
             ParseException {

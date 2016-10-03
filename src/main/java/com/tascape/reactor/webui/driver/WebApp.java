@@ -39,8 +39,6 @@ public abstract class WebApp extends EntityDriver {
 
     protected String version;
 
-    private String baseUrl;
-
     private final Map<Class<? extends WebPage>, WebPage> loadedPages = new HashMap<>();
 
     public <T extends WebPage> T open(Class<T> pageClass)
@@ -55,22 +53,16 @@ public abstract class WebApp extends EntityDriver {
         return pageClass.cast(page);
     }
 
+    public abstract String getBaseUrl();
+
     /**
      * Launches web app with base URL.
      *
-     * @param baseUrl such as https://google.com
-     *
      * @throws InterruptedException in case of error
      */
-    public void launch(String baseUrl) throws InterruptedException {
-        this.baseUrl = baseUrl;
-        webBrowser.get(baseUrl);
+    public void launch() throws InterruptedException {
+        webBrowser.get(this.getBaseUrl());
         Utils.sleep(this.getLaunchDelayMillis(), "Wait for app launch");
-    }
-
-    public void relaunch() throws InterruptedException {
-        webBrowser.get(baseUrl);
-        Utils.sleep(this.getLaunchDelayMillis(), "Wait for app re-launch");
     }
 
     public WebBrowser getWebBrowser() {
@@ -80,10 +72,6 @@ public abstract class WebApp extends EntityDriver {
     public void setWebBrowser(WebBrowser webBrowser) {
         this.webBrowser = webBrowser;
         this.webBrowser.setDriver(this);
-    }
-
-    public String getBaseUrl() {
-        return baseUrl;
     }
 
     public abstract int getLaunchDelayMillis();

@@ -57,11 +57,41 @@ public class Chrome extends WebBrowser {
         super.setWebDriver(new ChromeDriver(capabilities));
     }
 
+    /**
+     * Not support yet.
+     *
+     * @return NA
+     *
+     * @throws Exception NA
+     */
+    @Override
+    public int getLastLoadTimeMillis() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * Not support yet.
+     *
+     * @param url NA
+     *
+     * @return NA
+     *
+     * @throws Exception NA
+     */
     @Override
     public int getPageLoadTimeMillis(String url) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Not support yet.
+     *
+     * @param ajax NA
+     *
+     * @return NA
+     *
+     * @throws Exception NA
+     */
     @Override
     public int getAjaxLoadTimeMillis(Ajax ajax) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");

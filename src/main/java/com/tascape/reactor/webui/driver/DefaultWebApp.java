@@ -47,4 +47,14 @@ public class DefaultWebApp extends WebApp {
     public int getLaunchDelayMillis() {
         return 5000;
     }
+
+    public int getPageLoadTimeMillis(String url) throws Exception {
+        webBrowser.get(url);
+        return webBrowser.getLastLoadTimeMillis();
+    }
+
+    @Override
+    public String getBaseUrl() {
+        return URL;
+    }
 }

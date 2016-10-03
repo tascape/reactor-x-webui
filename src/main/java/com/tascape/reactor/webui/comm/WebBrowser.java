@@ -124,6 +124,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         textBox.sendKeys(Keys.DELETE);
     }
 
+    public abstract int getLastLoadTimeMillis() throws Exception;
+
     public abstract int getPageLoadTimeMillis(String url) throws Exception;
 
     public abstract int getAjaxLoadTimeMillis(Ajax ajax) throws Exception;
