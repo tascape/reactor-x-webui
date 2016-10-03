@@ -15,6 +15,8 @@
  */
 package com.tascape.reactor.webui.comm;
 
+import com.tascape.reactor.SystemConfiguration;
+import java.io.File;
 import java.util.Arrays;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -34,7 +36,16 @@ public class Chrome extends WebBrowser {
     public Chrome() {
         String chromeServer = System.getProperty(SYSPROP_CHROME_DRIVER);
         if (chromeServer == null) {
-            throw new RuntimeException("Cannot find system property " + SYSPROP_CHROME_DRIVER);
+            File cd = SystemConfiguration.HOME_PATH.resolve("webui").resolve("chromedriver").toFile();
+            if (cd.exists() && cd.isFile()) {
+                LOG.info("Use chromedriver at {}", cd.getAbsolutePath());
+                System.setProperty(SYSPROP_CHROME_DRIVER, cd.getAbsolutePath());
+            } else {
+                throw new RuntimeException("Cannot find chromedriver. Please set system property "
+                    + SYSPROP_CHROME_DRIVER + ", or copy chromedriver into directory " + cd.getParent());
+            }
+        } else {
+            LOG.info("Use chromedriver specified by system property {}={}", SYSPROP_CHROME_DRIVER, chromeServer);
         }
 
         ChromeOptions options = new ChromeOptions();
