@@ -49,6 +49,7 @@ public abstract class WebApp extends EntityDriver {
             page.setApp(this);
             loadedPages.put(pageClass, page);
         }
+        page.load();
         page.get();
         return pageClass.cast(page);
     }

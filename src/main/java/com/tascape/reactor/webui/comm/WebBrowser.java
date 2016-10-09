@@ -49,7 +49,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public static final String SYSPROP_WEBBROWSER_TYPE = "reactor.comm.WEBBROWSER_TYPE";
 
-    public static final int AJAX_TIMEOUT_SECONDS = 180;
+    public static final int AJAX_TIMEOUT_SECONDS = 60;
 
     public static final int WIDTH = 1920;
 
@@ -123,8 +123,6 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         textBox.sendKeys(Keys.chord(Keys.CONTROL, "a"));
         textBox.sendKeys(Keys.DELETE);
     }
-
-    public abstract int getLastLoadTimeMillis() throws Exception;
 
     public abstract int getPageLoadTimeMillis(String url) throws Exception;
 
@@ -284,7 +282,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     }
 
     public static interface Ajax {
-        public void doRequest();
+        public long doRequest();
 
         public By getByAppear();
 

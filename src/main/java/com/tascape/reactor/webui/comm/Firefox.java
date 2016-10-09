@@ -51,11 +51,15 @@ public class Firefox extends WebBrowser {
 
     public static final String DEFAULT_FF_PROFILE_NAME = "default";
 
+    public Firebug getFirebug() {
+        return firebug;
+    }
+
     public static interface Extension {
         public void updateProfile(FirefoxProfile profile);
     }
 
-    private Firebug firebug = null;
+    private final Firebug firebug;
 
     public Firefox(boolean enableFirebug) throws Exception {
         FirefoxProfile profile;
@@ -73,14 +77,16 @@ public class Firefox extends WebBrowser {
             throw new Exception("Cannot find Firefox profile");
         }
 
-        profile.setPreference("app.update.enabled", false);
         profile.setEnableNativeEvents(false);
         profile.setAcceptUntrustedCertificates(true);
         profile.setAssumeUntrustedCertificateIssuer(false);
+        profile.setPreference("app.update.enabled", false);
+        profile.setPreference("browser.cache.disk.enable ", false);
+        profile.setPreference("browser.cache.memory.enable", false);
         profile.setPreference("dom.max_chrome_script_run_time", 0);
         profile.setPreference("dom.max_script_run_time", 0);
+        this.firebug = new Firebug();
         if (enableFirebug) {
-            this.firebug = new Firebug();
             this.firebug.updateProfile(profile);
         }
 
@@ -103,11 +109,6 @@ public class Firefox extends WebBrowser {
     }
 
     @Override
-    public int getLastLoadTimeMillis() throws Exception {
-        return this.firebug.getLastPageLoadTimeMillis();
-    }
-
-    @Override
     public int getPageLoadTimeMillis(String url) throws Exception {
         return this.firebug.getPageLoadTimeMillis(url);
     }
@@ -117,35 +118,20 @@ public class Firefox extends WebBrowser {
         return this.firebug.getAjaxLoadTimeMillis(ajax);
     }
 
-    private class Firebug implements Extension {
+    public class Firebug implements Extension {
         private final String tokenNetExport = UUID.randomUUID().toString();
 
         private final Path harPath = Firefox.this.getLogPath();
 
-        public int getLastPageLoadTimeMillis() throws IOException, JSONException, InterruptedException, ParseException {
-            JSONObject json = this.waitForFirebugNetExport();
-            EntityDriver driver = Firefox.this.getDriver();
-            if (driver != null) {
-                driver.captureScreen();
-            }
-            return HarLog.parse(json).getOverallLoadTimeMillis();
-        }
-
-        public int getPageLoadTimeMillis(String url) throws IOException, JSONException, InterruptedException,
-            ParseException {
+        public int getPageLoadTimeMillis(String url) throws IOException, ParseException, InterruptedException {
             this.doNetClear();
-            EntityDriver driver = Firefox.this.getDriver();
             Firefox.this.get(url);
-            JSONObject json = this.waitForFirebugNetExport();
-            if (driver != null) {
-                driver.captureScreen();
-            }
-            return HarLog.parse(json).getOverallLoadTimeMillis();
+            return this.getLastLoadTimeMillis(0);
         }
 
         public int getAjaxLoadTimeMillis(Ajax ajax) throws Exception {
             this.doNetClear();
-            ajax.doRequest();
+            long start = ajax.doRequest();
             Utils.sleep(5000, "Wait for ajax to load");
             if (ajax.getByDisapper() != null) {
                 Firefox.this.waitForNoElement(ajax.getByDisapper(), AJAX_TIMEOUT_SECONDS);
@@ -153,18 +139,25 @@ public class Firefox extends WebBrowser {
             if (ajax.getByAppear() != null) {
                 Firefox.this.waitForElement(ajax.getByAppear(), AJAX_TIMEOUT_SECONDS);
             }
-            if (ajax.getByDisapper() == null && ajax.getByAppear() == null) {
-                Utils.sleep(5000, "Wait for ajax to load");
-            }
-            JSONObject json = this.waitForFirebugNetExport();
-            return HarLog.parse(json).getOverallLoadTimeMillis();
+            return this.getLastLoadTimeMillis(start);
         }
 
+        private int getLastLoadTimeMillis(long startMillis) throws IOException, ParseException, InterruptedException {
+            JSONObject json = this.waitForFirebugNetExport();
+            EntityDriver driver = Firefox.this.getDriver();
+            if (driver != null) {
+                driver.captureScreen();
+            }
+            return HarLog.parse(json).getOverallLoadTimeMillis(startMillis);
+        }
+
+        /*
+         * this seems not working.
+         */
         private void doNetClear() throws InterruptedException {
-            String var = "var options = {token: \"" + tokenNetExport + "\"};";
-            String js = var + "HAR.clear(options);";
+            String js = "HAR.clear({token: \"" + tokenNetExport + "\"});";
             Firefox.this.executeScript(Void.class, js);
-            Utils.sleep(2000, "clear Net detail");
+            LOG.debug("clear Net detail");
         }
 
         private String doNetExport() {
@@ -177,10 +170,12 @@ public class Firefox extends WebBrowser {
 
         private JSONObject waitForFirebugNetExport() throws IOException, InterruptedException {
             long end = System.currentTimeMillis() + FIREBUG_PAGELOADEDTIMEOUT_MILLI;
-            File har = harPath.resolve(this.doNetExport()).toFile();
             long size = -1;
+            File har = null;
             while (System.currentTimeMillis() < end) {
-                if (har.exists()) {
+                Thread.sleep(5000);
+                LOG.trace("Wait for http archive file");
+                if (har != null && har.exists()) {
                     long sizeCurrent = har.length();
                     if (size > 0 && size == sizeCurrent) {
                         JSONObject json = new JSONObject(FileUtils.readFileToString(har, Charset.defaultCharset()));
@@ -192,8 +187,10 @@ public class Firefox extends WebBrowser {
                         LOG.debug("har file size {} bytes", sizeCurrent);
                         size = sizeCurrent;
                     }
+                } else {
+                    har = harPath.resolve(this.doNetExport()).toFile();
+                    LOG.debug("har file {}", har.getAbsolutePath());
                 }
-                Utils.sleep(1000, "Wait for http archive file");
             }
             throw new IOException("Cannot load firebug netexport har file");
         }
@@ -398,7 +395,7 @@ class HarLog {
             try {
                 o.time = json.getInt("time");
             } catch (JSONException ex) {
-                LOG.warn("{} has no load time, use 0 - {}", o.pageref, ex.getMessage());
+                LOG.trace("{} has no load time, use 0 - {}", o.pageref, ex.getMessage());
                 o.time = 0;
             }
             o.request = Request.parse(json.getJSONObject("request"));
@@ -410,16 +407,18 @@ class HarLog {
         }
     }
 
-    int getOverallLoadTimeMillis() throws ParseException {
+    int getOverallLoadTimeMillis(long startMillis) throws ParseException {
         final String format = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
         long start = Long.MAX_VALUE;
         long end = Long.MIN_VALUE;
         for (Entry entry : this.entries) {
             long s = Utils.getTime(entry.startedDateTime, format);
-            start = Math.min(start, s);
-            long e = s + entry.time;
-            end = Math.max(end, e);
-            LOG.debug("{}/{} - {}", entry.request.method, entry.response.status, entry.request.url);
+            if (s > startMillis) {
+                start = Math.min(start, s);
+                long e = s + entry.time;
+                end = Math.max(end, e);
+                LOG.debug("{}/{} - {}", entry.request.method, entry.response.status, entry.request.url);
+            }
         }
         if (end <= start) {
             return -1;

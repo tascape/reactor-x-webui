@@ -60,18 +60,6 @@ public class Chrome extends WebBrowser {
     /**
      * Not support yet.
      *
-     * @return NA
-     *
-     * @throws Exception NA
-     */
-    @Override
-    public int getLastLoadTimeMillis() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    /**
-     * Not support yet.
-     *
      * @param url NA
      *
      * @return NA

@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 public class DefaultWebApp extends WebApp {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultWebApp.class);
 
-    public static final String URL = "http://127.0.0.1:28088/rr/";
+    public static final String URL = "http://127.0.0.1:28088";
 
     @Override
     public String getName() {
@@ -46,11 +46,6 @@ public class DefaultWebApp extends WebApp {
     @Override
     public int getLaunchDelayMillis() {
         return 5000;
-    }
-
-    public int getPageLoadTimeMillis(String url) throws Exception {
-        webBrowser.get(url);
-        return webBrowser.getLastLoadTimeMillis();
     }
 
     @Override
