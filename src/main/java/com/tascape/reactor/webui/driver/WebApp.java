@@ -41,8 +41,7 @@ public abstract class WebApp extends EntityDriver {
 
     private final Map<Class<? extends WebPage>, WebPage> loadedPages = new HashMap<>();
 
-    public <T extends WebPage> T open(Class<T> pageClass)
-        throws EntityCommunicationException {
+    public <T extends WebPage> T open(Class<T> pageClass) throws EntityCommunicationException {
         WebPage page = loadedPages.get(pageClass);
         if (page == null) {
             page = PageFactory.initElements(webBrowser.getWebDriver(), pageClass);

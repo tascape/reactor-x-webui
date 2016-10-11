@@ -1,5 +1,6 @@
 /*
- * Copyright 2015 - 2016 Nebula Bay.
+ * Copyright (c) 2015 - present Nebula Bay.
+ * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +43,8 @@ public class Chrome extends WebBrowser {
                 System.setProperty(SYSPROP_CHROME_DRIVER, cd.getAbsolutePath());
             } else {
                 throw new RuntimeException("Cannot find chromedriver. Please set system property "
-                    + SYSPROP_CHROME_DRIVER + ", or copy chromedriver into directory " + cd.getParent());
+                    + SYSPROP_CHROME_DRIVER + ", or download chromedriver into directory " + cd.getParent()
+                    + ". Check download page http://chromedriver.storage.googleapis.com/index.html");
             }
         } else {
             LOG.info("Use chromedriver specified by system property {}={}", SYSPROP_CHROME_DRIVER, chromeServer);

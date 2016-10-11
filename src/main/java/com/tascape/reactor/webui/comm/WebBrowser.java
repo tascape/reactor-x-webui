@@ -272,9 +272,9 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public void setDefaultTimeouts() {
         this.actions = new Actions(this.webDriver);
-        this.webDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-        this.webDriver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
-        this.webDriver.manage().timeouts().setScriptTimeout(60, TimeUnit.SECONDS);
+        this.webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        this.webDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+        this.webDriver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
     }
 
     public WebDriver getWebDriver() {
