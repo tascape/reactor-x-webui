@@ -17,7 +17,9 @@
 package com.tascape.reactor.webui.driver;
 
 import com.tascape.reactor.webui.comm.WebBrowser;
+import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
@@ -43,11 +45,18 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
     protected WebElement body;
 
     /**
-     * Get the relative path of this page.
+     * Gets the path of this page, comparing to web app base URL.
      *
      * @return such as /photos/edit.html
      */
     public abstract String getPath();
+
+    /**
+     * Gets the element expected to display on a web page, when the page is fully loaded.
+     *
+     * @return the expected element
+     */
+    public abstract WebElement getPageLoadedElement();
 
     void setApp(WebApp app) {
         this.app = app;
@@ -59,6 +68,15 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
         String url = app.getBaseUrl() + this.getPath();
         LOG.debug("load page {}", url);
         this.webBrowser.get(url);
+    }
+
+    @Override
+    protected void isLoaded() throws Error {
+        try {
+            Assert.assertTrue("Cannot find expected element displayed on page", getPageLoadedElement().isDisplayed());
+        } catch (NoSuchElementException ex) {
+            throw new Error(ex);
+        }
     }
 
     public void setSelect(WebElement select, String visibleText) {
