@@ -32,24 +32,26 @@ import org.slf4j.LoggerFactory;
 public class Chrome extends WebBrowser {
     private static final Logger LOG = LoggerFactory.getLogger(Chrome.class);
 
-    public static String SYSPROP_CHROME_DRIVER = "webdriver.chrome.driver";
+    public static final String SYSPROP_DRIVER = "webdriver.chrome.driver";
 
-    public Chrome() {
-        String chromeServer = System.getProperty(SYSPROP_CHROME_DRIVER);
-        if (chromeServer == null) {
-            File cd = SystemConfiguration.HOME_PATH.resolve("webui").resolve("chromedriver").toFile();
-            if (cd.exists() && cd.isFile()) {
-                LOG.info("Use chromedriver at {}", cd.getAbsolutePath());
-                System.setProperty(SYSPROP_CHROME_DRIVER, cd.getAbsolutePath());
+    static {
+        String driver = System.getProperty(SYSPROP_DRIVER);
+        if (driver == null) {
+            File d = SystemConfiguration.HOME_PATH.resolve("webui").resolve("chromedriver").toFile();
+            if (d.exists() && d.isFile()) {
+                LOG.info("Use chromedriver at {}", d.getAbsolutePath());
+                System.setProperty(SYSPROP_DRIVER, d.getAbsolutePath());
             } else {
                 throw new RuntimeException("Cannot find chromedriver. Please set system property "
-                    + SYSPROP_CHROME_DRIVER + ", or download chromedriver into directory " + cd.getParent()
+                    + SYSPROP_DRIVER + ", or download chromedriver into directory " + d.getParent()
                     + ". Check download page http://chromedriver.storage.googleapis.com/index.html");
             }
         } else {
-            LOG.info("Use chromedriver specified by system property {}={}", SYSPROP_CHROME_DRIVER, chromeServer);
+            LOG.info("Use chromedriver specified by system property {}={}", SYSPROP_DRIVER, driver);
         }
+    }
 
+    public Chrome() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments(Arrays.asList("allow-running-insecure-content", "ignore-certificate-errors"));
         //options.addExtensions(new File("/path/to/extension.crx"));
