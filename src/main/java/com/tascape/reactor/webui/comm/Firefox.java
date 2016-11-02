@@ -61,7 +61,13 @@ public class Firefox extends WebBrowser {
 
     private final Firebug firebug;
 
-    public Firefox(boolean enableFirebug) throws Exception {
+    /**
+     *
+     * @param devToolsEnabled Firebug is working as DevTools on firefox
+     *
+     * @throws Exception any error
+     */
+    public Firefox(boolean devToolsEnabled) throws Exception {
         FirefoxProfile profile;
 
         ProfilesIni profileIni = new ProfilesIni();
@@ -86,7 +92,7 @@ public class Firefox extends WebBrowser {
         profile.setPreference("dom.max_chrome_script_run_time", 0);
         profile.setPreference("dom.max_script_run_time", 0);
         this.firebug = new Firebug();
-        if (enableFirebug) {
+        if (devToolsEnabled) {
             this.firebug.updateProfile(profile);
         }
 

@@ -61,9 +61,10 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public void setWebDriver(WebDriver webDriver) {
         this.webDriver = webDriver;
+        setDefaultTimeouts();
     }
 
-    public static WebBrowser newBrowser(boolean extEnabled) throws Exception {
+    public static WebBrowser newBrowser(boolean devToolsEnabled) throws Exception {
         String type = SystemConfiguration.getInstance().getProperty(SYSPROP_WEBBROWSER_TYPE);
         if (type == null) {
             throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + " is not specified. "
@@ -71,23 +72,19 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         }
         switch (type) {
             case "firefox":
-                return newFirefox(extEnabled);
+                return newFirefox(devToolsEnabled);
             case "chrome":
-                return newChrome(extEnabled);
+                return newChrome(devToolsEnabled);
         }
         throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + "=" + type + " is not supported");
     }
 
-    public static Chrome newChrome(boolean extEnabled) {
-        Chrome wb = new Chrome();
-        wb.setDefaultTimeouts();
-        return wb;
+    public static Chrome newChrome(boolean devToolsEnabled) {
+        return new Chrome();
     }
 
-    public static Firefox newFirefox(boolean extEnabled) throws Exception {
-        Firefox wb = new Firefox(extEnabled);
-        wb.setDefaultTimeouts();
-        return wb;
+    public static Firefox newFirefox(boolean devToolsEnabled) throws Exception {
+        return new Firefox(devToolsEnabled);
     }
 
     @Override
