@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +40,20 @@ public abstract class WebApp extends EntityDriver {
 
     protected String version;
 
+    private String baseUrl;
+
     private final Map<Class<? extends WebPage>, WebPage> loadedPages = new HashMap<>();
 
+    /**
+     * Loads a URL to open a new page.
+     *
+     * @param <T>       page type
+     * @param pageClass page class
+     *
+     * @return page instance
+     *
+     * @throws EntityCommunicationException
+     */
     public <T extends WebPage> T open(Class<T> pageClass) throws EntityCommunicationException {
         WebPage page = loadedPages.get(pageClass);
         if (page == null) {
@@ -53,7 +66,35 @@ public abstract class WebApp extends EntityDriver {
         return pageClass.cast(page);
     }
 
-    public abstract String getBaseUrl();
+    /**
+     * Clicks on an element to open a new page.
+     *
+     * @param <T>       page type
+     * @param element   element to click on
+     * @param pageClass page class
+     *
+     * @return page instance
+     *
+     * @throws EntityCommunicationException anything goes wrong
+     */
+    public <T extends WebPage> T open(WebElement element, Class<T> pageClass) throws EntityCommunicationException {
+        WebPage page = loadedPages.get(pageClass);
+        if (page == null) {
+            page = PageFactory.initElements(webBrowser.getWebDriver(), pageClass);
+            page.setApp(this);
+            loadedPages.put(pageClass, page);
+        }
+        page.load(element);
+        return pageClass.cast(page);
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
 
     /**
      * Launches web app with base URL.

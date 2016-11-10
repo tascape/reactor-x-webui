@@ -70,6 +70,12 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
         this.webBrowser.get(url);
     }
 
+    protected void load(WebElement element) {
+        LOG.trace("load page by clicking {}", element);
+        element.click();
+        isLoaded();
+    }
+
     @Override
     protected void isLoaded() throws Error {
         try {
