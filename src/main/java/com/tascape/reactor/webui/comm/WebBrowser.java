@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -253,12 +252,17 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         this.manage().window().setPosition(new Point(WIDTH, WIDTH));
     }
 
-    public void scrollToTop() {
-        executeScript("window.scrollTo(0, 0 - document.body.scrollHeight);");
-    }
-
+    /**
+     * Highlights an element with solid red 3px border.
+     *
+     * @param we target web element
+     */
     public void highlight(WebElement we) {
         executeScript("arguments[0].style.border='3px solid red'", we);
+    }
+
+    public void scrollToTop() {
+        executeScript("window.scrollTo(0, 0 - document.body.scrollHeight);");
     }
 
     public void scrollToBottom() {
@@ -273,12 +277,20 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         return actions;
     }
 
+    /**
+     * Waits for a specific element to appear.
+     *
+     * @param by      The locating mechanism
+     * @param seconds wait timeout
+     *
+     * @return The first matching element on the current page
+     *
+     * @throws org.openqa.selenium.TimeoutException if the timeout expires.
+     */
     public WebElement waitForElement(By by, int seconds) {
         LOG.debug("Wait for element {} to appear", by);
         WebDriverWait wait = new WebDriverWait(this, seconds);
-        WebElement e = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-        Assert.assertNotNull("Cannot find element " + by, e);
-        return e;
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(by));
     }
 
     public void waitForNoElement(final By by, int seconds) {
