@@ -146,9 +146,19 @@ public abstract class WebApp extends EntityDriver {
 
     public abstract int getLaunchDelayMillis();
 
+    public File takeBrowserScreenshot() {
+        try {
+            return webBrowser.takeBrowserScreenshot();
+        } catch (IOException ex) {
+            LOG.warn("Cannot take browser screenshot {}", ex.getMessage());
+        }
+        return null;
+    }
+
+    @Deprecated
     public File takeBrowerScreenshot() {
         try {
-            return webBrowser.takeBrowerScreenshot();
+            return webBrowser.takeBrowserScreenshot();
         } catch (IOException ex) {
             LOG.warn("Cannot take browser screenshot {}", ex.getMessage());
         }

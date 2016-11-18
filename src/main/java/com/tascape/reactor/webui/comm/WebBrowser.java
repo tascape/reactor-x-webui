@@ -102,6 +102,15 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         this.webDriver.get(url);
     }
 
+    public File takeBrowserScreenshot() throws IOException {
+        File ss = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
+        File f = this.getLogPath().resolve(ss.getName()).toFile();
+        LOG.debug("Screenshot {}", f.getAbsolutePath());
+        FileUtils.moveFile(ss, f);
+        return ss;
+    }
+
+    @Deprecated
     public File takeBrowerScreenshot() throws IOException {
         File ss = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
         File f = this.getLogPath().resolve(ss.getName()).toFile();
