@@ -212,8 +212,22 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * @return primitive type or WebElement
      */
     public <T extends Object> T executeScript(Class<T> type, String script, Object... args) {
-        Object object = ((JavascriptExecutor) webDriver).executeScript(script, args);
-        return type.cast(object);
+        if (this.webDriver instanceof JavascriptExecutor) {
+            Object object = ((JavascriptExecutor) webDriver).executeScript(script, args);
+            return type.cast(object);
+        } else {
+            LOG.warn("Cannot execute javascript");
+            return null;
+        }
+    }
+
+    public Object executeScript(String script, Object... args) {
+        if (this.webDriver instanceof JavascriptExecutor) {
+            return ((JavascriptExecutor) webDriver).executeScript(script, args);
+        } else {
+            LOG.warn("Cannot execute javascript");
+            return null;
+        }
     }
 
     public void landscape() {
@@ -231,15 +245,19 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     }
 
     public void scrollToTop() {
-        ((JavascriptExecutor) webDriver).executeScript("window.scrollTo(0, 0 - document.body.scrollHeight);");
+        executeScript("window.scrollTo(0, 0 - document.body.scrollHeight);");
+    }
+
+    public void highlight(WebElement we) {
+        executeScript("arguments[0].style.border='3px solid red'", we);
     }
 
     public void scrollToBottom() {
-        ((JavascriptExecutor) webDriver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
+        executeScript("window.scrollTo(0, document.body.scrollHeight);");
     }
 
     public String getHtml(WebElement element) {
-        return this.executeScript(String.class, "return arguments[0].innerHTML;", element);
+        return executeScript(String.class, "return arguments[0].innerHTML;", element);
     }
 
     public Actions getActions() {

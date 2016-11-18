@@ -52,7 +52,7 @@ public abstract class WebApp extends EntityDriver {
      *
      * @return page instance
      *
-     * @throws EntityCommunicationException
+     * @throws EntityCommunicationException anything goes wrong
      */
     public <T extends WebPage> T open(Class<T> pageClass) throws EntityCommunicationException {
         WebPage page = loadedPages.get(pageClass);
@@ -64,6 +64,35 @@ public abstract class WebApp extends EntityDriver {
         page.load();
         page.get();
         return pageClass.cast(page);
+    }
+
+    /**
+     * Claims the current page, and casts it into expected page.
+     *
+     * @param <T>       page type
+     * @param pageClass page class
+     *
+     * @return expected page instance
+     *
+     * @throws EntityCommunicationException anything goes wrong
+     */
+    public <T extends WebPage> T claim(Class<T> pageClass) throws EntityCommunicationException {
+        WebPage page = loadedPages.get(pageClass);
+        if (page == null) {
+            page = PageFactory.initElements(webBrowser.getWebDriver(), pageClass);
+            page.setApp(this);
+            loadedPages.put(pageClass, page);
+        }
+        long end = System.currentTimeMillis() + 30000;
+        while (System.currentTimeMillis() < end) {
+            try {
+                page.isLoaded();
+                return pageClass.cast(page);
+            } catch (Throwable t) {
+                LOG.debug("{}, retry", t.getMessage());
+            }
+        }
+        throw new EntityCommunicationException("Current page is not expected " + page.getPath());
     }
 
     /**
