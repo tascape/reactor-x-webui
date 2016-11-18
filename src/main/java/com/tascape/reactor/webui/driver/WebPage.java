@@ -85,6 +85,10 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
         }
     }
 
+    public void refresh() {
+        app.getWebBrowser().navigate().refresh();
+    }
+
     public void setSelect(WebElement select, String visibleText) {
         if (null == visibleText) {
             return;
