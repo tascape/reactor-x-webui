@@ -59,10 +59,10 @@ public abstract class WebApp extends EntityDriver {
         if (page == null) {
             page = PageFactory.initElements(webBrowser.getWebDriver(), pageClass);
             page.setApp(this);
-            loadedPages.put(pageClass, page);
         }
         page.load();
         page.get();
+        loadedPages.put(pageClass, page);
         return pageClass.cast(page);
     }
 
@@ -86,7 +86,7 @@ public abstract class WebApp extends EntityDriver {
         long end = System.currentTimeMillis() + 30000;
         while (System.currentTimeMillis() < end) {
             try {
-                page.isLoaded();
+                page.hasLoaded();
                 return pageClass.cast(page);
             } catch (Throwable t) {
                 LOG.debug("{}, retry", t.getMessage());
