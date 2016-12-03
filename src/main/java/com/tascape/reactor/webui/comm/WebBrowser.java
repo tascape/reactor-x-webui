@@ -17,12 +17,14 @@
 package com.tascape.reactor.webui.comm;
 
 import com.tascape.reactor.SystemConfiguration;
+import com.tascape.reactor.Utils;
 import com.tascape.reactor.comm.EntityCommunication;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -275,6 +277,24 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public Actions getActions() {
         return actions;
+    }
+
+    /**
+     * Takes multiple screen shots with different screen resolutions.
+     *
+     * @see ScreenResolution
+     */
+    public void takeBrowserScreenshots() {
+        Stream.of(ScreenResolution.values()).forEach(sr -> {
+            LOG.info("try screen resolution {} x {}", sr.width, sr.height);
+            manage().window().setSize(new Dimension(sr.width, sr.height));
+            try {
+                Utils.sleep(1000, "");
+                takeBrowserScreenshot();
+            } catch (IOException | InterruptedException ex) {
+                LOG.warn(ex.getMessage());
+            }
+        });
     }
 
     /**

@@ -101,4 +101,8 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
     public void highlight(WebElement element) {
         this.webBrowser.executeScript(Void.class, "arguments[0].style.border='3px solid red';", element);
     }
+
+    public WebApp getApp() {
+        return app;
+    }
 }

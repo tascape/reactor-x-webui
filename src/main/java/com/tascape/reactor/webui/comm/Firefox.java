@@ -21,6 +21,7 @@ import com.tascape.reactor.driver.EntityDriver;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.LinkedList;
@@ -49,6 +50,8 @@ public class Firefox extends WebBrowser {
 
     public static final String SYSPROP_FF_PROFILE_NAME = "reactor.comm.FF_PROFILE_NAME";
 
+    public static final String SYSPROP_FF_ABOUT_CONFIG = "reactor.comm.FF_ABOUT_CONFIG";
+
     public static final String DEFAULT_FF_PROFILE_NAME = "default";
 
     public Firebug getFirebug() {
@@ -58,6 +61,8 @@ public class Firefox extends WebBrowser {
     public static interface Extension {
         public void updateProfile(FirefoxProfile profile);
     }
+
+    private final Path downloadDir = Files.createTempDirectory("ff-download");
 
     private final Firebug firebug;
 
@@ -91,6 +96,24 @@ public class Firefox extends WebBrowser {
         profile.setPreference("browser.cache.memory.enable", false);
         profile.setPreference("dom.max_chrome_script_run_time", 0);
         profile.setPreference("dom.max_script_run_time", 0);
+
+        profile.setPreference("browser.download.folderList", 2);
+        profile.setPreference("browser.download.dir", downloadDir.toFile().getAbsolutePath());
+        profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "application/pdf,application/x-pdf");
+        profile.setPreference("pdfjs.disabled", true);
+
+//        try {
+//            String propFile = sysConfig.getProperty(SYSPROP_FF_ABOUT_CONFIG, "");
+//            if (StringUtils.isNotBlank(propFile)) {
+//                File f = new File(propFile);
+//                if (f.exists()) {
+//                    profile.updateUserPrefs(f);
+//                }
+//            }
+//        } catch (Exception ex) {
+//            LOG.warn((ex.getMessage()));
+//        }
+//
         this.firebug = new Firebug();
         if (devToolsEnabled) {
             this.firebug.updateProfile(profile);
@@ -215,6 +238,10 @@ public class Firefox extends WebBrowser {
             profile.setPreference("devtools.netmonitor.har.defaultLogDir", harPath.toFile().getAbsolutePath());
             profile.setPreference("devtools.netmonitor.har.pageLoadedTimeout", 1500); // default 1500
         }
+    }
+
+    public Path getDownloadDir() {
+        return downloadDir;
     }
 }
 
