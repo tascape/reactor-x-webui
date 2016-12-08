@@ -67,23 +67,38 @@ public abstract class WebApp extends EntityDriver {
     }
 
     /**
-     * Claims the current page, and casts it into expected page.
+     * Claims the current page, and casts it into expected page. Timeout in 15 seconds.
      *
      * @param <T>       page type
      * @param pageClass page class
      *
      * @return expected page instance
      *
-     * @throws EntityCommunicationException anything goes wrong
+     * @throws NotExpectedPageException a runtime exception
      */
-    public <T extends WebPage> T claim(Class<T> pageClass) throws EntityCommunicationException {
+    public <T extends WebPage> T claim(Class<T> pageClass) {
+        return claim(pageClass, 15000);
+    }
+
+    /**
+     * Claims the current page, and casts it into expected page.
+     *
+     * @param <T>           page type
+     * @param pageClass     page class
+     * @param timeoutMillis timeout in millisecond
+     *
+     * @return expected page instance
+     *
+     * @throws NotExpectedPageException a runtime exception
+     */
+    public <T extends WebPage> T claim(Class<T> pageClass, long timeoutMillis) {
         WebPage page = loadedPages.get(pageClass);
         if (page == null) {
             page = PageFactory.initElements(webBrowser.getWebDriver(), pageClass);
             page.setApp(this);
             loadedPages.put(pageClass, page);
         }
-        long end = System.currentTimeMillis() + 30000;
+        long end = System.currentTimeMillis() + timeoutMillis;
         while (System.currentTimeMillis() < end) {
             try {
                 page.hasLoaded();
@@ -92,7 +107,7 @@ public abstract class WebApp extends EntityDriver {
                 LOG.debug("{}, retry", t.getMessage());
             }
         }
-        throw new EntityCommunicationException("Current page is not expected " + page.getPath());
+        throw new NotExpectedPageException(page.getPath());
     }
 
     /**
