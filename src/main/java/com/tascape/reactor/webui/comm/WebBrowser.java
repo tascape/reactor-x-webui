@@ -36,6 +36,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -295,6 +296,19 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
                 LOG.warn(ex.getMessage());
             }
         });
+    }
+
+    /**
+     * Waits for a specific condition.
+     *
+     * @param condition expected condition
+     * @param seconds   wait timeout
+     *
+     * @throws org.openqa.selenium.TimeoutException if the timeout expires.
+     */
+    public void waitFor(ExpectedCondition condition, int seconds) {
+        WebDriverWait wait = new WebDriverWait(this, seconds);
+        wait.until(condition);
     }
 
     /**
