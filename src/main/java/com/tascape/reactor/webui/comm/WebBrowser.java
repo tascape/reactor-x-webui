@@ -132,6 +132,17 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         textBox.sendKeys(Keys.DELETE);
     }
 
+    /**
+     * Sets text into a text box, clears it first.
+     *
+     * @param textBox text input element
+     * @param text    text to set
+     */
+    public void setText(WebElement textBox, String text) {
+        this.clear(textBox);
+        textBox.sendKeys(text);
+    }
+
     public abstract int getPageLoadTimeMillis(String url) throws Exception;
 
     public abstract int getAjaxLoadTimeMillis(Ajax ajax) throws Exception;
