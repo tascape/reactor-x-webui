@@ -121,6 +121,7 @@ public class Firefox extends WebBrowser {
 
         DesiredCapabilities capabilities = DesiredCapabilities.firefox();
         capabilities.setCapability("marionette", true);
+        super.setProxy(capabilities);
 
         long end = System.currentTimeMillis() + 180000;
         while (System.currentTimeMillis() < end) {

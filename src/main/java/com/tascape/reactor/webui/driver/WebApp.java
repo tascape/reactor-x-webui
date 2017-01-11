@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import net.lightbody.bmp.BrowserMobProxy;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.LoggerFactory;
@@ -152,6 +153,10 @@ public abstract class WebApp extends EntityDriver {
 
     public WebBrowser getWebBrowser() {
         return webBrowser;
+    }
+    
+    public BrowserMobProxy getBrowserProxy() {
+        return webBrowser.getBrowserProxy();
     }
 
     public void setWebBrowser(WebBrowser webBrowser) {

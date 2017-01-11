@@ -16,6 +16,7 @@
  */
 package com.tascape.reactor.webui.comm;
 
+import com.beust.jcommander.internal.Lists;
 import com.tascape.reactor.SystemConfiguration;
 import com.tascape.reactor.Utils;
 import com.tascape.reactor.comm.EntityCommunication;
@@ -25,6 +26,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
+import net.lightbody.bmp.BrowserMobProxy;
+import net.lightbody.bmp.BrowserMobProxyServer;
+import net.lightbody.bmp.client.ClientUtil;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -36,6 +40,9 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -51,6 +58,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public static final String SYSPROP_WEBBROWSER_TYPE = "reactor.comm.WEBBROWSER_TYPE";
 
+    public static final String SYSPROP_WEBBROWSER_USE_PROXY = "reactor.comm.WEBBROWSER_USE_PROXY";
+
     public static final int AJAX_TIMEOUT_SECONDS = 60;
 
     public static final int WIDTH = 1920;
@@ -61,24 +70,44 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     private Actions actions;
 
+    protected final BrowserMobProxy browserProxy;
+
+    protected WebBrowser() {
+        if (sysConfig.getBooleanProperty(SYSPROP_WEBBROWSER_USE_PROXY, false)) {
+            browserProxy = new BrowserMobProxyServer();
+            browserProxy.setTrustAllServers(true);
+            browserProxy.start();
+        } else {
+            browserProxy = null;
+        }
+    }
+
     public void setWebDriver(WebDriver webDriver) {
         this.webDriver = webDriver;
         setDefaultTimeouts();
     }
 
+    protected void setProxy(DesiredCapabilities capabilities) {
+        if (browserProxy != null) {
+            capabilities.setCapability(CapabilityType.PROXY, ClientUtil.createSeleniumProxy(browserProxy));
+        }
+    }
+
     public static WebBrowser newBrowser(boolean devToolsEnabled) throws Exception {
+        List<String> sbs = Lists.newArrayList(BrowserType.FIREFOX, BrowserType.CHROME);
         String type = SystemConfiguration.getInstance().getProperty(SYSPROP_WEBBROWSER_TYPE);
         if (type == null) {
             throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + " is not specified. "
-                + "firefox and chrome are supported.");
+                + sbs + " are supported.");
         }
         switch (type) {
-            case "firefox":
+            case BrowserType.FIREFOX:
                 return newFirefox(devToolsEnabled);
-            case "chrome":
+            case BrowserType.CHROME:
                 return newChrome(devToolsEnabled);
         }
-        throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + "=" + type + " is not supported");
+        throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + "=" + type
+            + " is not supported. Only " + sbs + " are supported currently.");
     }
 
     public static Chrome newChrome(boolean devToolsEnabled) {
@@ -119,6 +148,10 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         LOG.debug("Screenshot {}", f.getAbsolutePath());
         FileUtils.moveFile(ss, f);
         return ss;
+    }
+
+    public BrowserMobProxy getBrowserProxy() {
+        return browserProxy;
     }
 
     /**
@@ -188,6 +221,9 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     public void quit() {
         LOG.debug("Quit browser");
         this.webDriver.quit();
+        if (browserProxy != null) {
+            this.browserProxy.abort();
+        }
     }
 
     @Override
