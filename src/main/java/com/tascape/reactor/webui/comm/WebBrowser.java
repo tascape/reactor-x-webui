@@ -60,6 +60,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public static final String SYSPROP_WEBBROWSER_USE_PROXY = "reactor.comm.WEBBROWSER_USE_PROXY";
 
+    public static final String SYSPROP_WEBBROWSER_CLICK_DELAY = "reactor.comm.WEBBROWSER_CLICK_DELAY";
+
     public static final int AJAX_TIMEOUT_SECONDS = 60;
 
     public static final int WIDTH = 1920;
@@ -72,6 +74,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     protected final BrowserMobProxy browserProxy;
 
+    private final int clickDelayMillis;
+
     protected WebBrowser() {
         if (sysConfig.getBooleanProperty(SYSPROP_WEBBROWSER_USE_PROXY, false)) {
             browserProxy = new BrowserMobProxyServer();
@@ -80,6 +84,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         } else {
             browserProxy = null;
         }
+        clickDelayMillis = sysConfig.getIntProperty(SYSPROP_WEBBROWSER_CLICK_DELAY, 200);
     }
 
     public void setWebDriver(WebDriver webDriver) {
@@ -141,17 +146,23 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         return ss;
     }
 
-    @Deprecated
-    public File takeBrowerScreenshot() throws IOException {
-        File ss = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
-        File f = this.getLogPath().resolve(ss.getName()).toFile();
-        LOG.debug("Screenshot {}", f.getAbsolutePath());
-        FileUtils.moveFile(ss, f);
-        return ss;
-    }
-
     public BrowserMobProxy getBrowserProxy() {
         return browserProxy;
+    }
+
+    /**
+     * Clicks on a web element. A delay of milliseconds can be set via integer system property
+     * reactor.comm.WEBBROWSER_CLICK_DELAY.
+     *
+     * @param webElement target web element
+     */
+    public void click(WebElement webElement) {
+        try {
+            Thread.sleep(clickDelayMillis);
+        } catch (InterruptedException ex) {
+            LOG.trace("{}", ex.getMessage());
+        }
+        webElement.click();
     }
 
     /**
