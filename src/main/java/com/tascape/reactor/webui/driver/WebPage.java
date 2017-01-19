@@ -58,7 +58,7 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
     protected void load() {
         String url = app.getBaseUrl() + this.getPath();
         LOG.debug("load page {}", url);
-        this.webBrowser.get(url);
+        webBrowser.get(url);
     }
 
     protected void load(WebElement element) {
@@ -72,34 +72,28 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
     }
 
     public void refresh() {
-        app.getWebBrowser().navigate().refresh();
+        webBrowser.navigate().refresh();
     }
 
     public void setSelect(WebElement select, String visibleText) {
         if (null == visibleText) {
             return;
         }
-        Select s = new Select(select);
-        if (visibleText.isEmpty()) {
-            s.selectByIndex(1);
-        } else {
-            s.selectByVisibleText(visibleText);
-        }
+        Select s = webBrowser.castAsSelect(select);
+        s.selectByVisibleText(visibleText);
     }
 
     public void setSelect(By by, String visibleText) {
-        WebElement select = this.webBrowser.findElement(by);
-        this.setSelect(select, visibleText);
+        setSelect(webBrowser.findElement(by), visibleText);
     }
 
     public String getSelect(By by) {
-        WebElement select = this.webBrowser.findElement(by);
-        Select s = new Select(select);
+        Select s = webBrowser.castAsSelect(webBrowser.findElement(by));
         return s.getFirstSelectedOption().getText();
     }
 
     public void highlight(WebElement element) {
-        this.webBrowser.executeScript(Void.class, "arguments[0].style.border='3px solid red';", element);
+        this.webBrowser.highlight(element);
     }
 
     public WebApp getApp() {

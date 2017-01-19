@@ -45,6 +45,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -185,6 +186,29 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     public void setText(WebElement textBox, String text) {
         this.clear(textBox);
         textBox.sendKeys(text);
+    }
+
+    /**
+     * Sets a check box state.
+     *
+     * @param checkBox checkBox input element
+     * @param checked  checked or not
+     */
+    public void setChecked(WebElement checkBox, boolean checked) {
+        if (checkBox.isSelected() ^ checked) {
+            checkBox.click();
+        }
+    }
+
+    /**
+     * Casts a WebElement as a HTML Select object.
+     *
+     * @param element target element
+     *
+     * @return HTML Select
+     */
+    public Select castAsSelect(WebElement element) {
+        return new Select(element);
     }
 
     public abstract int getPageLoadTimeMillis(String url) throws Exception;

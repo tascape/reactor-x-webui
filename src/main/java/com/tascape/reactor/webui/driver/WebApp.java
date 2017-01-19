@@ -154,7 +154,7 @@ public abstract class WebApp extends EntityDriver {
     public WebBrowser getWebBrowser() {
         return webBrowser;
     }
-    
+
     public BrowserMobProxy getBrowserProxy() {
         return webBrowser.getBrowserProxy();
     }
@@ -175,13 +175,12 @@ public abstract class WebApp extends EntityDriver {
         return null;
     }
 
-    @Deprecated
-    public File takeBrowerScreenshot() {
-        try {
-            return webBrowser.takeBrowserScreenshot();
-        } catch (IOException ex) {
-            LOG.warn("Cannot take browser screenshot {}", ex.getMessage());
-        }
-        return null;
+    /**
+     * Throws UnsupportedOperationException.
+     *
+     * @param timeoutMinutes
+     */
+    public void interactManually(int timeoutMinutes) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

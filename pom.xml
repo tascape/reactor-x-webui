@@ -6,7 +6,7 @@
 
     <groupId>com.tascape</groupId>
     <artifactId>reactor-x-webui</artifactId>
-    <version>1.2.12</version>
+    <version>1.2.13</version>
     <packaging>jar</packaging>
 
     <name>reactor-x-webui</name>
@@ -165,6 +165,12 @@
                         </configuration>
                     </plugin>
                 </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jenkins</id>
+            <build>
+                <finalName>${project.artifactId}-${project.version}-${BUILD_NUMBER}</finalName>
             </build>
         </profile>
     </profiles>
