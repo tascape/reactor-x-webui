@@ -139,6 +139,13 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         this.webDriver.get(url);
     }
 
+    /**
+     * Takes a screen shot of current browser window.
+     *
+     * @return image file
+     *
+     * @throws IOException if error
+     */
     public File takeBrowserScreenshot() throws IOException {
         File ss = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
         File f = this.getLogPath().resolve(ss.getName()).toFile();
