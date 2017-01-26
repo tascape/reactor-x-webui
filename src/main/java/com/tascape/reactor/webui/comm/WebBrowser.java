@@ -61,7 +61,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public static final String SYSPROP_WEBBROWSER_USE_PROXY = "reactor.comm.WEBBROWSER_USE_PROXY";
 
-    public static final String SYSPROP_WEBBROWSER_CLICK_DELAY = "reactor.comm.WEBBROWSER_CLICK_DELAY";
+    public static final String SYSPROP_WEBBROWSER_INTERACTION_DELAY_MILLIS
+        = "reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS";
 
     public static final int AJAX_TIMEOUT_SECONDS = 60;
 
@@ -75,7 +76,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     protected final BrowserMobProxy browserProxy;
 
-    private final int clickDelayMillis;
+    private final int interactionDelayMillis;
 
     protected WebBrowser() {
         if (sysConfig.getBooleanProperty(SYSPROP_WEBBROWSER_USE_PROXY, false)) {
@@ -85,7 +86,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         } else {
             browserProxy = null;
         }
-        clickDelayMillis = sysConfig.getIntProperty(SYSPROP_WEBBROWSER_CLICK_DELAY, 200);
+        interactionDelayMillis = sysConfig.getIntProperty(SYSPROP_WEBBROWSER_INTERACTION_DELAY_MILLIS, 200);
     }
 
     public void setWebDriver(WebDriver webDriver) {
@@ -160,16 +161,12 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     /**
      * Clicks on a web element. A delay of milliseconds can be set via integer system property
-     * reactor.comm.WEBBROWSER_CLICK_DELAY.
+     * reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS.
      *
      * @param webElement target web element
      */
     public void click(WebElement webElement) {
-        try {
-            Thread.sleep(clickDelayMillis);
-        } catch (InterruptedException ex) {
-            LOG.trace("{}", ex.getMessage());
-        }
+        this.delay();
         webElement.click();
     }
 
@@ -185,36 +182,42 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     }
 
     /**
-     * Sets text into a text box, clears it first.
+     * Sets text into a text box, clears it first. A delay of milliseconds can be set via integer system property
+     * reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS.
      *
      * @param textBox text input element
      * @param text    text to set
      */
     public void setText(WebElement textBox, String text) {
         this.clear(textBox);
+        this.delay();
         textBox.sendKeys(text);
     }
 
     /**
-     * Sets a check box state.
+     * Sets a check box state. A delay of milliseconds can be set via integer system property
+     * reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS.
      *
      * @param checkBox checkBox input element
      * @param checked  checked or not
      */
     public void setChecked(WebElement checkBox, boolean checked) {
         if (checkBox.isSelected() ^ checked) {
+            this.delay();
             checkBox.click();
         }
     }
 
     /**
-     * Casts a WebElement as a HTML Select object.
+     * Casts a WebElement as a HTML Select object. A delay of milliseconds can be set via integer system property
+     * reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS.
      *
      * @param element target element
      *
      * @return HTML Select
      */
     public Select castAsSelect(WebElement element) {
+        this.delay();
         return new Select(element);
     }
 
@@ -331,11 +334,13 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     }
 
     public void landscape() {
+        this.delay();
         this.manage().window().setPosition(new Point(0, 0));
         this.manage().window().setSize(new Dimension(WIDTH, HEIGHT));
     }
 
     public void portrait() {
+        this.delay();
         this.manage().window().setPosition(new Point(0, 0));
         this.manage().window().setSize(new Dimension(HEIGHT, WIDTH));
     }
@@ -457,6 +462,14 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         @Override
         public By getByDisapper() {
             return null;
+        }
+    }
+
+    private void delay() {
+        try {
+            Thread.sleep(interactionDelayMillis);
+        } catch (InterruptedException ex) {
+            LOG.trace("{}", ex.getMessage());
         }
     }
 }
