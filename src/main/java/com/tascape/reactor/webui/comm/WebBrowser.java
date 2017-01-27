@@ -465,7 +465,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         }
     }
 
-    private void delay() {
+    public void delay() {
         try {
             Thread.sleep(interactionDelayMillis);
         } catch (InterruptedException ex) {
