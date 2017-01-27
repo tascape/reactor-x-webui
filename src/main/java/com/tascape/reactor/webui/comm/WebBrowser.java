@@ -109,8 +109,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
                 + sbs + " are supported.");
         }
         String[] ts = type.split("\\|");
-        String t = ts[ts.length == 1 ? 0 : new Random().nextInt() % ts.length];
-        switch (t) {
+        switch (ts[new Random().nextInt() % ts.length]) {
             case BrowserType.FIREFOX:
                 return newFirefox(devToolsEnabled);
             case BrowserType.CHROME:
