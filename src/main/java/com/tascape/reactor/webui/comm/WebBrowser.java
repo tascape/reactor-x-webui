@@ -23,6 +23,7 @@ import com.tascape.reactor.comm.EntityCommunication;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -107,7 +108,9 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
             throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + " is not specified. "
                 + sbs + " are supported.");
         }
-        switch (type) {
+        String[] ts = type.split("\\|");
+        String t = ts[ts.length == 1 ? 0 : new Random().nextInt() % ts.length];
+        switch (t) {
             case BrowserType.FIREFOX:
                 return newFirefox(devToolsEnabled);
             case BrowserType.CHROME:
