@@ -189,8 +189,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * @param text    text to set
      */
     public void setText(WebElement textBox, String text) {
-        this.clear(textBox);
         this.delay();
+        this.clear(textBox);
         textBox.sendKeys(text);
     }
 
