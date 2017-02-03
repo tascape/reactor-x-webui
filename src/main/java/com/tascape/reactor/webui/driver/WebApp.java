@@ -105,6 +105,11 @@ public abstract class WebApp extends EntityDriver {
                 page.hasLoaded();
                 return pageClass.cast(page);
             } catch (Throwable t) {
+                try {
+                    webBrowser.takeBrowserScreenshot();
+                } catch (IOException ex) {
+                    LOG.warn("{}", ex.getMessage());
+                }
                 LOG.debug("{}, retry", t.getMessage());
             }
         }
