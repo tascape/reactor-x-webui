@@ -109,7 +109,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
                 + sbs + " are supported.");
         }
         String[] ts = type.split("\\|");
-        switch (ts[new Random().nextInt() % ts.length]) {
+        switch (ts[new Random().nextInt(1000) % ts.length]) {
             case BrowserType.FIREFOX:
                 return newFirefox(devToolsEnabled);
             case BrowserType.CHROME:
@@ -119,12 +119,22 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
             + " is not supported. Only " + sbs + " are supported currently.");
     }
 
-    public static Chrome newChrome(boolean devToolsEnabled) {
-        return new Chrome();
+    public static Chrome newChrome(boolean devToolsEnabled) throws Exception {
+        try {
+            return new Chrome();
+        } catch (Exception ex) {
+            Thread.sleep(1000);
+            return new Chrome();
+        }
     }
 
     public static Firefox newFirefox(boolean devToolsEnabled) throws Exception {
-        return new Firefox(devToolsEnabled);
+        try {
+            return new Firefox(devToolsEnabled);
+        } catch (Exception ex) {
+            Thread.sleep(1000);
+            return new Firefox(devToolsEnabled);
+        }
     }
 
     @Override
@@ -159,6 +169,10 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public BrowserMobProxy getBrowserProxy() {
         return browserProxy;
+    }
+
+    public WebElement parentOf(WebElement element) {
+        return element.findElement(By.xpath(".."));
     }
 
     /**
