@@ -451,10 +451,14 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     }
 
     public void setDefaultTimeouts() {
-        this.actions = new Actions(this.webDriver);
         this.webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         this.webDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
         this.webDriver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
+        this.actions = new Actions(this.webDriver);
+    }
+
+    public void delay() {
+        super.delay(interactionDelayMillis);
     }
 
     public WebDriver getWebDriver() {
@@ -478,14 +482,6 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         @Override
         public By getByDisapper() {
             return null;
-        }
-    }
-
-    public void delay() {
-        try {
-            Thread.sleep(interactionDelayMillis);
-        } catch (InterruptedException ex) {
-            LOG.trace("{}", ex.getMessage());
         }
     }
 }
