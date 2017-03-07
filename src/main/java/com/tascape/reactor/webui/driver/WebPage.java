@@ -17,12 +17,11 @@
 package com.tascape.reactor.webui.driver;
 
 import com.tascape.reactor.webui.comm.WebBrowser;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.LoadableComponent;
-import org.openqa.selenium.support.ui.Select;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,25 +74,34 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
         webBrowser.navigate().refresh();
     }
 
-    public void setSelect(WebElement select, String visibleText) {
-        if (null == visibleText) {
-            return;
+    /**
+     * Shows a fragment of a web page.
+     *
+     * @param <T>           fragment type
+     * @param fragmentClass fragment class
+     *
+     * @return fragment instance
+     */
+    public <T extends WebFragment> T show(Class<T> fragmentClass) {
+        return this.show(null, fragmentClass);
+    }
+
+    /**
+     * Shows a fragment of a web page.
+     *
+     * @param <T>           fragment type
+     * @param element
+     * @param fragmentClass fragment class
+     *
+     * @return fragment instance
+     */
+    public <T extends WebFragment> T show(WebElement element, Class<T> fragmentClass) {
+        if (element != null) {
+            webBrowser.click(element);
         }
-        Select s = webBrowser.castAsSelect(select);
-        s.selectByVisibleText(visibleText);
-    }
-
-    public void setSelect(By by, String visibleText) {
-        setSelect(webBrowser.findElement(by), visibleText);
-    }
-
-    public String getSelect(By by) {
-        Select s = webBrowser.castAsSelect(webBrowser.findElement(by));
-        return s.getFirstSelectedOption().getText();
-    }
-
-    public void highlight(WebElement element) {
-        this.webBrowser.highlight(element);
+        WebFragment fragment = PageFactory.initElements(webBrowser.getWebDriver(), fragmentClass);
+        fragment.setPage(this);
+        return fragmentClass.cast(fragment);
     }
 
     public WebApp getApp() {

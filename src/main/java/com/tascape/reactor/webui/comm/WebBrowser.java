@@ -63,7 +63,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     public static final String SYSPROP_WEBBROWSER_USE_PROXY = "reactor.comm.WEBBROWSER_USE_PROXY";
 
     public static final String SYSPROP_WEBBROWSER_INTERACTION_DELAY_MILLIS
-        = "reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS";
+            = "reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS";
 
     public static final int AJAX_TIMEOUT_SECONDS = 60;
 
@@ -106,7 +106,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         String type = SystemConfiguration.getInstance().getProperty(SYSPROP_WEBBROWSER_TYPE);
         if (type == null) {
             throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + " is not specified. "
-                + sbs + " are supported.");
+                    + sbs + " are supported.");
         }
         String[] ts = type.split("\\|");
         switch (ts[new Random().nextInt(1000) % ts.length]) {
@@ -116,7 +116,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
                 return newChrome(devToolsEnabled);
         }
         throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + "=" + type
-            + " is not supported. Only " + sbs + " are supported currently.");
+                + " is not supported. Only " + sbs + " are supported currently.");
     }
 
     public static Chrome newChrome(boolean devToolsEnabled) throws Exception {
@@ -235,6 +235,35 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     public Select castAsSelect(WebElement element) {
         this.delay();
         return new Select(element);
+    }
+
+    public void selectByVisibleText(WebElement select, String visibleText) {
+        if (null == visibleText) {
+            return;
+        }
+        Select s = castAsSelect(select);
+        s.selectByVisibleText(visibleText);
+    }
+
+    public void select(By by, String visibleText) {
+        selectByVisibleText(findElement(by), visibleText);
+    }
+
+    public String getFirstSelectedOption(By by) {
+        Select s = castAsSelect(findElement(by));
+        return s.getFirstSelectedOption().getText();
+    }
+
+    /**
+     * Gets the first selected option display text of a WebElement as a HTML Select object.
+     *
+     * @param element target element
+     *
+     * @return display text
+     */
+    public String getFirstSelectedOption(WebElement element) {
+        Select select = this.castAsSelect(element);
+        return select.getFirstSelectedOption().getText();
     }
 
     public abstract int getPageLoadTimeMillis(String url) throws Exception;
