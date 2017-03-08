@@ -27,10 +27,12 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
+import javax.imageio.ImageIO;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -50,6 +52,10 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.Screenshot;
+import ru.yandex.qatools.ashot.coordinates.WebDriverCoordsProvider;
+import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 /**
  *
@@ -164,7 +170,27 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         File f = this.getLogPath().resolve(ss.getName()).toFile();
         LOG.debug("Screenshot {}", f.getAbsolutePath());
         FileUtils.moveFile(ss, f);
-        return ss;
+        return f;
+    }
+
+    /**
+     * Takes a screen shot of specified web element.
+     *
+     * @param webElement specified web element
+     *
+     * @return image file
+     *
+     * @throws IOException if error
+     */
+    public File takeBrowserScreenshot(WebElement webElement) throws IOException {
+        File f = this.getLogPath().resolve("screeshot-" + RandomStringUtils.randomNumeric(18) + ".png").toFile();
+        Screenshot screenshot = new AShot()
+                .coordsProvider(new WebDriverCoordsProvider()) //find coordinates with WebDriver API
+                .shootingStrategy(ShootingStrategies.viewportPasting(100))
+                .takeScreenshot(webDriver, webElement);
+        ImageIO.write(screenshot.getImage(), "PNG", f);
+        LOG.debug("Screenshot {}", f.getAbsolutePath());
+        return f;
     }
 
     public BrowserMobProxy getBrowserProxy() {
@@ -409,6 +435,10 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public void scrollToBottom() {
         executeScript("window.scrollTo(0, document.body.scrollHeight);");
+    }
+
+    public void scrollIntoView(WebElement element) {
+        executeScript("arguments[0].scrollIntoView();", element);
     }
 
     public String getHtml(WebElement element) {
