@@ -24,7 +24,7 @@
         <dependency>
             <groupId>com.tascape</groupId>
             <artifactId>reactor</artifactId>
-            <version>1.2.11</version>
+            <version>1.2.15</version>
         </dependency>
         <dependency>
             <groupId>com.tascape</groupId>
@@ -46,6 +46,12 @@
             <artifactId>browsermob-core</artifactId>
             <version>2.1.4</version>
         </dependency>
+        <dependency>
+            <groupId>ru.yandex.qatools.ashot</groupId>
+            <artifactId>ashot</artifactId>
+            <version>1.5.3</version>
+            <type>jar</type>
+        </dependency>   
     </dependencies>
 
     <url>https://github.com/tascape/reactor-x-webui</url>
