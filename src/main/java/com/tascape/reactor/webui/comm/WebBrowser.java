@@ -22,6 +22,8 @@ import com.tascape.reactor.Utils;
 import com.tascape.reactor.comm.EntityCommunication;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -32,7 +34,6 @@ import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -77,6 +78,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public static final int HEIGHT = 1080;
 
+    public static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("HH.mm.ss.SSS");
+
     private WebDriver webDriver;
 
     private Actions actions;
@@ -110,7 +113,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     }
 
     public static WebBrowser newBrowser(boolean devToolsEnabled) throws Exception {
-        List<String> sbs = Lists.newArrayList(BrowserType.FIREFOX, BrowserType.CHROME);
+        List<String> sbs = Lists.newArrayList(BrowserType.FIREFOX, BrowserType.CHROME, BrowserType.SAFARI);
         String type = SystemConfiguration.getInstance().getProperty(SYSPROP_WEBBROWSER_TYPE);
         if (type == null) {
             throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + " is not specified. "
@@ -122,6 +125,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
                 return newFirefox(devToolsEnabled);
             case BrowserType.CHROME:
                 return newChrome(devToolsEnabled);
+            case BrowserType.SAFARI:
+                return newSafari(devToolsEnabled);
         }
         throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + "=" + type
                 + " is not supported. Only " + sbs + " are supported currently.");
@@ -131,6 +136,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         try {
             return new Chrome();
         } catch (Exception ex) {
+            LOG.warn(ex.getMessage());
             Thread.sleep(1000);
             return new Chrome();
         }
@@ -140,8 +146,19 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         try {
             return new Firefox(devToolsEnabled);
         } catch (Exception ex) {
+            LOG.warn(ex.getMessage());
             Thread.sleep(1000);
             return new Firefox(devToolsEnabled);
+        }
+    }
+
+    public static Safari newSafari(boolean devToolsEnabled) throws Exception {
+        try {
+            return new Safari();
+        } catch (Exception ex) {
+            LOG.warn(ex.getMessage());
+            Thread.sleep(1000);
+            return new Safari();
         }
     }
 
@@ -169,7 +186,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      */
     public File takeBrowserScreenshot() throws IOException {
         File ss = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
-        File f = this.getLogPath().resolve(ss.getName()).toFile();
+        File f = this.getLogPath().resolve("screeshot-" + LocalDateTime.now().format(DT_FORMATTER) + ".png").toFile();
         LOG.debug("Screenshot {}", f.getAbsolutePath());
         FileUtils.moveFile(ss, f);
         return f;
@@ -185,7 +202,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * @throws IOException if error
      */
     public File takeBrowserScreenshot(WebElement webElement) throws IOException {
-        File f = this.getLogPath().resolve("screeshot-" + RandomStringUtils.randomNumeric(18) + ".png").toFile();
+        File f = this.getLogPath().resolve("screeshot-" + LocalDateTime.now().format(DT_FORMATTER) + ".png").toFile();
         Screenshot screenshot = new AShot()
                 .coordsProvider(new WebDriverCoordsProvider()) //find coordinates with WebDriver API
                 .shootingStrategy(ShootingStrategies.viewportPasting(100))
@@ -441,6 +458,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * Highlights an element with solid red 3px border.
      *
      * @param we target web element
+     *
+     * @return self
      */
     public WebBrowser highlight(WebElement we) {
         executeScript("arguments[0].style.border='3px solid red'", we);
@@ -526,14 +545,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     public WebBrowser waitForNoElement(final By by, int seconds) {
         LOG.debug("Wait for element {} to disappear", by);
         WebDriverWait wait = new WebDriverWait(this, seconds);
-        wait.until((WebDriver t) -> {
-            List<WebElement> es = t.findElements(by);
-            if (es.isEmpty()) {
-                return true;
-            } else {
-                return es.stream().noneMatch((e) -> (!e.getCssValue("display").equals("none")));
-            }
-        });
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
         return this;
     }
 
