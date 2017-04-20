@@ -235,6 +235,21 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     }
 
     /**
+     * Hovers mouse on a web element. A delay of milliseconds can be set via integer system property
+     * reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS.
+     *
+     * @param webElement target web element
+     *
+     * @return itself
+     */
+    public WebBrowser hover(WebElement webElement) {
+        this.delay();
+        Actions builder = new Actions(this.webDriver);
+        builder.moveToElement(webElement).build().perform();
+        return this;
+    }
+
+    /**
      * Clears input area with CTRL-A and DELETE.
      *
      * @param textBox text input element
