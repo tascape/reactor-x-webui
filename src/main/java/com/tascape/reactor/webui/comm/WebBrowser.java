@@ -22,6 +22,8 @@ import com.tascape.reactor.Utils;
 import com.tascape.reactor.comm.EntityCommunication;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -32,7 +34,6 @@ import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -77,6 +78,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public static final int HEIGHT = 1080;
 
+    public static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("HH.mm.ss.SSS");
+
     private WebDriver webDriver;
 
     private Actions actions;
@@ -96,19 +99,21 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         interactionDelayMillis = sysConfig.getIntProperty(SYSPROP_WEBBROWSER_INTERACTION_DELAY_MILLIS, 200);
     }
 
-    public void setWebDriver(WebDriver webDriver) {
+    public WebBrowser setWebDriver(WebDriver webDriver) {
         this.webDriver = webDriver;
         setDefaultTimeouts();
+        return this;
     }
 
-    protected void setProxy(DesiredCapabilities capabilities) {
+    protected WebBrowser setProxy(DesiredCapabilities capabilities) {
         if (browserProxy != null) {
             capabilities.setCapability(CapabilityType.PROXY, ClientUtil.createSeleniumProxy(browserProxy));
         }
+        return this;
     }
 
     public static WebBrowser newBrowser(boolean devToolsEnabled) throws Exception {
-        List<String> sbs = Lists.newArrayList(BrowserType.FIREFOX, BrowserType.CHROME);
+        List<String> sbs = Lists.newArrayList(BrowserType.FIREFOX, BrowserType.CHROME, BrowserType.SAFARI);
         String type = SystemConfiguration.getInstance().getProperty(SYSPROP_WEBBROWSER_TYPE);
         if (type == null) {
             throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + " is not specified. "
@@ -120,6 +125,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
                 return newFirefox(devToolsEnabled);
             case BrowserType.CHROME:
                 return newChrome(devToolsEnabled);
+            case BrowserType.SAFARI:
+                return newSafari(devToolsEnabled);
         }
         throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + "=" + type
                 + " is not supported. Only " + sbs + " are supported currently.");
@@ -129,6 +136,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         try {
             return new Chrome();
         } catch (Exception ex) {
+            LOG.warn(ex.getMessage());
             Thread.sleep(1000);
             return new Chrome();
         }
@@ -138,8 +146,19 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         try {
             return new Firefox(devToolsEnabled);
         } catch (Exception ex) {
+            LOG.warn(ex.getMessage());
             Thread.sleep(1000);
             return new Firefox(devToolsEnabled);
+        }
+    }
+
+    public static Safari newSafari(boolean devToolsEnabled) throws Exception {
+        try {
+            return new Safari();
+        } catch (Exception ex) {
+            LOG.warn(ex.getMessage());
+            Thread.sleep(1000);
+            return new Safari();
         }
     }
 
@@ -167,7 +186,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      */
     public File takeBrowserScreenshot() throws IOException {
         File ss = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
-        File f = this.getLogPath().resolve(ss.getName()).toFile();
+        File f = this.getLogPath().resolve("screeshot-" + LocalDateTime.now().format(DT_FORMATTER) + ".png").toFile();
         LOG.debug("Screenshot {}", f.getAbsolutePath());
         FileUtils.moveFile(ss, f);
         return f;
@@ -183,7 +202,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * @throws IOException if error
      */
     public File takeBrowserScreenshot(WebElement webElement) throws IOException {
-        File f = this.getLogPath().resolve("screeshot-" + RandomStringUtils.randomNumeric(18) + ".png").toFile();
+        File f = this.getLogPath().resolve("screeshot-" + LocalDateTime.now().format(DT_FORMATTER) + ".png").toFile();
         Screenshot screenshot = new AShot()
                 .coordsProvider(new WebDriverCoordsProvider()) //find coordinates with WebDriver API
                 .shootingStrategy(ShootingStrategies.viewportPasting(100))
@@ -206,21 +225,42 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS.
      *
      * @param webElement target web element
+     *
+     * @return itself
      */
-    public void click(WebElement webElement) {
+    public WebBrowser click(WebElement webElement) {
         this.delay();
         webElement.click();
+        return this;
+    }
+
+    /**
+     * Hovers mouse on a web element. A delay of milliseconds can be set via integer system property
+     * reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS.
+     *
+     * @param webElement target web element
+     *
+     * @return itself
+     */
+    public WebBrowser hover(WebElement webElement) {
+        this.delay();
+        Actions builder = new Actions(this.webDriver);
+        builder.moveToElement(webElement).build().perform();
+        return this;
     }
 
     /**
      * Clears input area with CTRL-A and DELETE.
      *
      * @param textBox text input element
+     *
+     * @return itself
      */
-    public void clear(WebElement textBox) {
+    public WebBrowser clear(WebElement textBox) {
         textBox.clear();
         textBox.sendKeys(Keys.chord(Keys.CONTROL, "a"));
         textBox.sendKeys(Keys.DELETE);
+        return this;
     }
 
     /**
@@ -229,11 +269,14 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      *
      * @param textBox text input element
      * @param text    text to set
+     *
+     * @return itself
      */
-    public void setText(WebElement textBox, String text) {
+    public WebBrowser setText(WebElement textBox, String text) {
         this.delay();
         this.clear(textBox);
         textBox.sendKeys(text);
+        return this;
     }
 
     /**
@@ -243,11 +286,12 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * @param checkBox checkBox input element
      * @param checked  checked or not
      */
-    public void setChecked(WebElement checkBox, boolean checked) {
+    public WebBrowser setChecked(WebElement checkBox, boolean checked) {
         if (checkBox.isSelected() ^ checked) {
             this.delay();
             checkBox.click();
         }
+        return this;
     }
 
     /**
@@ -263,16 +307,18 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         return new Select(element);
     }
 
-    public void selectByVisibleText(WebElement select, String visibleText) {
+    public WebBrowser selectByVisibleText(WebElement select, String visibleText) {
         if (null == visibleText) {
-            return;
+            return this;
         }
         Select s = castAsSelect(select);
         s.selectByVisibleText(visibleText);
+        return this;
     }
 
-    public void select(By by, String visibleText) {
+    public WebBrowser select(By by, String visibleText) {
         selectByVisibleText(findElement(by), visibleText);
+        return this;
     }
 
     public String getFirstSelectedOption(By by) {
@@ -404,41 +450,50 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         }
     }
 
-    public void landscape() {
+    public WebBrowser landscape() {
         this.delay();
         this.manage().window().setPosition(new Point(0, 0));
         this.manage().window().setSize(new Dimension(WIDTH, HEIGHT));
+        return this;
     }
 
-    public void portrait() {
+    public WebBrowser portrait() {
         this.delay();
         this.manage().window().setPosition(new Point(0, 0));
         this.manage().window().setSize(new Dimension(HEIGHT, WIDTH));
+        return this;
     }
 
-    public void hide() {
+    public WebBrowser hide() {
         this.manage().window().setPosition(new Point(WIDTH, WIDTH));
+        return this;
     }
 
     /**
      * Highlights an element with solid red 3px border.
      *
      * @param we target web element
+     *
+     * @return self
      */
-    public void highlight(WebElement we) {
+    public WebBrowser highlight(WebElement we) {
         executeScript("arguments[0].style.border='3px solid red'", we);
+        return this;
     }
 
-    public void scrollToTop() {
+    public WebBrowser scrollToTop() {
         executeScript("window.scrollTo(0, 0 - document.body.scrollHeight);");
+        return this;
     }
 
-    public void scrollToBottom() {
+    public WebBrowser scrollToBottom() {
         executeScript("window.scrollTo(0, document.body.scrollHeight);");
+        return this;
     }
 
-    public void scrollIntoView(WebElement element) {
+    public WebBrowser scrollIntoView(WebElement element) {
         executeScript("arguments[0].scrollIntoView();", element);
+        return this;
     }
 
     public String getHtml(WebElement element) {
@@ -452,9 +507,11 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     /**
      * Takes multiple screen shots with different screen resolutions.
      *
+     * @return self
+     *
      * @see ScreenResolution
      */
-    public void takeBrowserScreenshots() {
+    public WebBrowser takeBrowserScreenshots() {
         Stream.of(ScreenResolution.values()).forEach(sr -> {
             LOG.info("try screen resolution {} x {}", sr.width, sr.height);
             manage().window().setSize(new Dimension(sr.width, sr.height));
@@ -465,6 +522,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
                 LOG.warn(ex.getMessage());
             }
         });
+        return this;
     }
 
     /**
@@ -473,11 +531,12 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * @param condition expected condition
      * @param seconds   wait timeout
      *
-     * @throws org.openqa.selenium.TimeoutException if the timeout expires.
+     * @return self
      */
-    public void waitFor(ExpectedCondition condition, int seconds) {
+    public WebBrowser waitFor(ExpectedCondition condition, int seconds) {
         WebDriverWait wait = new WebDriverWait(this, seconds);
         wait.until(condition);
+        return this;
     }
 
     /**
@@ -496,28 +555,24 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         return wait.until(ExpectedConditions.visibilityOfElementLocated(by));
     }
 
-    public void waitForNoElement(final By by, int seconds) {
+    public WebBrowser waitForNoElement(final By by, int seconds) {
         LOG.debug("Wait for element {} to disappear", by);
         WebDriverWait wait = new WebDriverWait(this, seconds);
-        wait.until((WebDriver t) -> {
-            List<WebElement> es = t.findElements(by);
-            if (es.isEmpty()) {
-                return true;
-            } else {
-                return es.stream().noneMatch((e) -> (!e.getCssValue("display").equals("none")));
-            }
-        });
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
+        return this;
     }
 
-    public void setDefaultTimeouts() {
+    public WebBrowser setDefaultTimeouts() {
         this.webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         this.webDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
         this.webDriver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
         this.actions = new Actions(this.webDriver);
+        return this;
     }
 
-    public void delay() {
+    public WebBrowser delay() {
         super.delay(interactionDelayMillis);
+        return this;
     }
 
     public WebDriver getWebDriver() {

@@ -62,7 +62,7 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
 
     protected void load(WebElement element) {
         LOG.trace("load page by clicking {}", element);
-        element.click();
+        webBrowser.click(element);
         isLoaded();
     }
 

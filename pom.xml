@@ -6,7 +6,7 @@
 
     <groupId>com.tascape</groupId>
     <artifactId>reactor-x-webui</artifactId>
-    <version>2.0.0</version>
+    <version>1.3.0</version>
     <packaging>jar</packaging>
 
     <name>reactor-x-webui</name>
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>com.tascape</groupId>
             <artifactId>reactor</artifactId>
-            <version>1.2.15</version>
+            <version>1.2.18</version>
         </dependency>
         <dependency>
             <groupId>com.tascape</groupId>
@@ -34,24 +34,34 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-            <version>3.0.1</version>
+            <version>3.3.1</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>3.0.1</version>
-        </dependency>    
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-api</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-support</artifactId>
+            <version>3.3.1</version>
+        </dependency>
         <dependency>
             <groupId>net.lightbody.bmp</groupId>
             <artifactId>browsermob-core</artifactId>
             <version>2.1.4</version>
-        </dependency>
+        </dependency> 
         <dependency>
             <groupId>ru.yandex.qatools.ashot</groupId>
             <artifactId>ashot</artifactId>
             <version>1.5.3</version>
             <type>jar</type>
-        </dependency>   
+        </dependency>
     </dependencies>
 
     <url>https://github.com/tascape/reactor-x-webui</url>
