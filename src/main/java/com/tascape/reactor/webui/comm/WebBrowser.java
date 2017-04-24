@@ -532,8 +532,6 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * @param seconds   wait timeout
      *
      * @return self
-     *
-     * @throws org.openqa.selenium.TimeoutException if the timeout expires.
      */
     public WebBrowser waitFor(ExpectedCondition condition, int seconds) {
         WebDriverWait wait = new WebDriverWait(this, seconds);

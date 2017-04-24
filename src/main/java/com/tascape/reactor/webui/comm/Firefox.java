@@ -16,6 +16,7 @@
  */
 package com.tascape.reactor.webui.comm;
 
+import com.tascape.reactor.SystemConfiguration;
 import com.tascape.reactor.Utils;
 import com.tascape.reactor.driver.EntityDriver;
 import java.io.File;
@@ -44,6 +45,8 @@ import org.slf4j.LoggerFactory;
 public class Firefox extends WebBrowser {
     private static final Logger LOG = LoggerFactory.getLogger(Firefox.class);
 
+    public static final String SYSPROP_DRIVER = "webdriver.gecko.driver";
+
     public static final int FIREBUG_PAGELOADEDTIMEOUT_MILLI = 60000;
 
     public static final String SYSPROP_FF_BINARY = "reactor.comm.FF_BINARY";
@@ -53,6 +56,23 @@ public class Firefox extends WebBrowser {
     public static final String SYSPROP_FF_ABOUT_CONFIG = "reactor.comm.FF_ABOUT_CONFIG";
 
     public static final String DEFAULT_FF_PROFILE_NAME = "default";
+
+    static {
+        String driver = System.getProperty(SYSPROP_DRIVER);
+        if (driver == null) {
+            File d = SystemConfiguration.HOME_PATH.resolve("webui").resolve("geckodriver").toFile();
+            if (d.exists() && d.isFile()) {
+                LOG.info("Use geckodriver at {}", d.getAbsolutePath());
+                System.setProperty(SYSPROP_DRIVER, d.getAbsolutePath());
+            } else {
+                throw new RuntimeException("Cannot find geckodriver. Please set system property "
+                        + SYSPROP_DRIVER + ", or download geckodriver into directory " + d.getParent()
+                        + ". Check download page http://https://github.com/mozilla/geckodriver/releases");
+            }
+        } else {
+            LOG.info("Use geckodriver specified by system property {}={}", SYSPROP_DRIVER, driver);
+        }
+    }
 
     public Firebug getFirebug() {
         return firebug;
@@ -88,9 +108,9 @@ public class Firefox extends WebBrowser {
             throw new Exception("Cannot find Firefox profile");
         }
 
-        profile.setEnableNativeEvents(false);
         profile.setAcceptUntrustedCertificates(true);
-        profile.setAssumeUntrustedCertificateIssuer(false);
+        profile.setAssumeUntrustedCertificateIssuer(true);
+        profile.setPreference("services.sync.prefs.sync.signon.rememberSignons", false);
         profile.setPreference("app.update.enabled", false);
         profile.setPreference("browser.cache.disk.enable ", false);
         profile.setPreference("browser.cache.memory.enable", false);
@@ -120,6 +140,8 @@ public class Firefox extends WebBrowser {
         }
 
         DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+        capabilities.acceptInsecureCerts();
+        capabilities.setAcceptInsecureCerts(true);
         capabilities.setCapability("marionette", true);
         super.setProxy(capabilities);
 
