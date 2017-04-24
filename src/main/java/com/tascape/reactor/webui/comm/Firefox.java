@@ -109,7 +109,7 @@ public class Firefox extends WebBrowser {
         }
 
         profile.setAcceptUntrustedCertificates(true);
-        profile.setAssumeUntrustedCertificateIssuer(false);
+        profile.setAssumeUntrustedCertificateIssuer(true);
         profile.setPreference("services.sync.prefs.sync.signon.rememberSignons", false);
         profile.setPreference("app.update.enabled", false);
         profile.setPreference("browser.cache.disk.enable ", false);
