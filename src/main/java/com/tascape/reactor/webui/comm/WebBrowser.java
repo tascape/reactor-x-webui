@@ -173,7 +173,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     @Override
     public void get(String url) {
-        LOG.debug("Open url {}", url);
+        LOG.trace("Open url {}", url);
         this.webDriver.get(url);
     }
 
@@ -243,9 +243,10 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * @return itself
      */
     public WebBrowser hover(WebElement webElement) {
-        this.delay();
+        scrollIntoView(webElement);
         Actions builder = new Actions(this.webDriver);
         builder.moveToElement(webElement).build().perform();
+        this.delay();
         return this;
     }
 
