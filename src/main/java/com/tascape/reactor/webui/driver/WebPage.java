@@ -100,6 +100,7 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
             webBrowser.click(element);
         }
         WebFragment fragment = PageFactory.initElements(webBrowser.getWebDriver(), fragmentClass);
+        fragment.load();
         fragment.setPage(this);
         return fragmentClass.cast(fragment);
     }

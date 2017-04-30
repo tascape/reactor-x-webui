@@ -36,7 +36,7 @@ public abstract class WebFragment extends LoadableComponent<WebFragment> {
 
     @Override
     protected void load() {
-        LOG.warn("NA");
+        this.isLoaded();
     }
 
     public void setPage(WebPage page) {
