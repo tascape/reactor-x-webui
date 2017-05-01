@@ -563,6 +563,23 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         return this;
     }
 
+    /**
+     * Waits for a specific element to be clickable.
+     *
+     * @param element the web element
+     * @param seconds wait timeout
+     *
+     * @return The element to wait
+     *
+     * @throws org.openqa.selenium.TimeoutException if the timeout expires.
+     */
+    public WebElement waitForClickable(WebElement element, int seconds) {
+        LOG.debug("Wait for element {} to to clickable", element);
+        WebDriverWait wait = new WebDriverWait(this, seconds);
+        wait.until(ExpectedConditions.elementToBeClickable(element));
+        return element;
+    }
+
     public WebBrowser setDefaultTimeouts() {
         this.webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         this.webDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
