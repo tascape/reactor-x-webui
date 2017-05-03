@@ -186,7 +186,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      */
     public File takeBrowserScreenshot() throws IOException {
         File ss = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
-        File f = this.getLogPath().resolve("screeshot-" + LocalDateTime.now().format(DT_FORMATTER) + ".png").toFile();
+        File f = this.getLogPath().resolve("screenshot-" + LocalDateTime.now().format(DT_FORMATTER) + ".png").toFile();
         LOG.debug("Screenshot {}", f.getAbsolutePath());
         FileUtils.moveFile(ss, f);
         return f;
@@ -202,7 +202,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * @throws IOException if error
      */
     public File takeBrowserScreenshot(WebElement webElement) throws IOException {
-        File f = this.getLogPath().resolve("screeshot-" + LocalDateTime.now().format(DT_FORMATTER) + ".png").toFile();
+        File f = this.getLogPath().resolve("screenshot-" + LocalDateTime.now().format(DT_FORMATTER) + ".png").toFile();
         Screenshot screenshot = new AShot()
                 .coordsProvider(new WebDriverCoordsProvider()) //find coordinates with WebDriver API
                 .shootingStrategy(ShootingStrategies.viewportPasting(100))
@@ -574,7 +574,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * @throws org.openqa.selenium.TimeoutException if the timeout expires.
      */
     public WebElement waitForClickable(WebElement element, int seconds) {
-        LOG.debug("Wait for element {} to to clickable", element);
+        LOG.debug("Wait for element {} to be clickable", element);
         WebDriverWait wait = new WebDriverWait(this, seconds);
         wait.until(ExpectedConditions.elementToBeClickable(element));
         return element;
