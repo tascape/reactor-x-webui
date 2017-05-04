@@ -16,24 +16,28 @@
  */
 package com.tascape.reactor.webui.comm;
 
-import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Lists;
 import com.tascape.reactor.SystemConfiguration;
 import com.tascape.reactor.Utils;
 import com.tascape.reactor.comm.EntityCommunication;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -44,6 +48,10 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -64,6 +72,9 @@ import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
  */
 public abstract class WebBrowser extends EntityCommunication implements WebDriver {
     private static final Logger LOG = LoggerFactory.getLogger(WebBrowser.class);
+
+    public static final List<String> SUPPORTED_BROWSERS = Lists.newArrayList(BrowserType.FIREFOX, BrowserType.CHROME,
+            BrowserType.SAFARI);
 
     public static final String SYSPROP_WEBBROWSER_TYPE = "reactor.comm.WEBBROWSER_TYPE";
 
@@ -112,12 +123,23 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         return this;
     }
 
+    protected WebBrowser setLogging(DesiredCapabilities capabilities) {
+        LoggingPreferences logs = new LoggingPreferences();
+        logs.enable(LogType.BROWSER, Level.ALL);
+        logs.enable(LogType.CLIENT, Level.ALL);
+        logs.enable(LogType.DRIVER, Level.ALL);
+        logs.enable(LogType.PERFORMANCE, Level.ALL);
+        logs.enable(LogType.PROFILER, Level.ALL);
+        logs.enable(LogType.SERVER, Level.ALL);
+        capabilities.setCapability(CapabilityType.LOGGING_PREFS, logs);
+        return this;
+    }
+
     public static WebBrowser newBrowser(boolean devToolsEnabled) throws Exception {
-        List<String> sbs = Lists.newArrayList(BrowserType.FIREFOX, BrowserType.CHROME, BrowserType.SAFARI);
         String type = SystemConfiguration.getInstance().getProperty(SYSPROP_WEBBROWSER_TYPE);
         if (type == null) {
             throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + " is not specified. "
-                    + sbs + " are supported.");
+                    + SUPPORTED_BROWSERS + " are supported.");
         }
         String[] ts = type.split("\\|");
         switch (ts[new Random().nextInt(1000) % ts.length]) {
@@ -129,7 +151,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
                 return newSafari(devToolsEnabled);
         }
         throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + "=" + type
-                + " is not supported. Only " + sbs + " are supported currently.");
+                + " is not supported. Only " + SUPPORTED_BROWSERS + " are supported currently.");
     }
 
     public static Chrome newChrome(boolean devToolsEnabled) throws Exception {
@@ -175,6 +197,21 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     public void get(String url) {
         LOG.trace("Open url {}", url);
         this.webDriver.get(url);
+    }
+
+    public void saveWebDriverLogs() throws IOException {
+        Logs logs = this.webDriver.manage().logs();
+        logs.getAvailableLogTypes().forEach(type -> {
+            try {
+                LogEntries les = logs.get(type);
+                File f = saveAsTextFile(type, "");
+                try (OutputStream out = FileUtils.openOutputStream(f)) {
+                    IOUtils.writeLines(les.getAll(), IOUtils.LINE_SEPARATOR, out, Charset.defaultCharset());
+                }
+            } catch (Exception ex) {
+                LOG.trace(ex.getMessage());
+            }
+        });
     }
 
     /**
