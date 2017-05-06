@@ -620,7 +620,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     /**
      * Waits for the element specified by locator to be clickable.
      *
-     * @param element the web element
+     * @param by      the web element locator
      * @param seconds wait timeout
      *
      * @return The element to wait

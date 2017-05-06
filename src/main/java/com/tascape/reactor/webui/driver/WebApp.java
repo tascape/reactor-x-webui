@@ -183,7 +183,7 @@ public abstract class WebApp extends EntityDriver {
     /**
      * Throws UnsupportedOperationException.
      *
-     * @param timeoutMinutes
+     * @param timeoutMinutes timeout
      */
     public void interactManually(int timeoutMinutes) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

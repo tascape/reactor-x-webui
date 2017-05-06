@@ -90,7 +90,7 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
      * Shows a fragment of a web page.
      *
      * @param <T>           fragment type
-     * @param element
+     * @param element       web element to click
      * @param fragmentClass fragment class
      *
      * @return fragment instance
