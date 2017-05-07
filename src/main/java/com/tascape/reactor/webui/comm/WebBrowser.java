@@ -488,6 +488,13 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         }
     }
 
+    public WebBrowser setWindowSize(int width, int height) {
+        this.delay();
+        this.manage().window().setPosition(new Point(0, 0));
+        this.manage().window().setSize(new Dimension(width, height));
+        return this;
+    }
+
     public WebBrowser landscape() {
         this.delay();
         this.manage().window().setPosition(new Point(0, 0));
