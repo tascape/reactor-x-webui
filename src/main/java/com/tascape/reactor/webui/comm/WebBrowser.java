@@ -643,10 +643,18 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         return this.findElement(by);
     }
 
+    /**
+     * Sets default timeouts/waits (in second).
+     * implicitlyWait = 0
+     * pageLoadTimeout = 10
+     * setScriptTimeout = 10
+     *
+     * @return
+     */
     public WebBrowser setDefaultTimeouts() {
-        this.webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        this.webDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
-        this.webDriver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
+        this.webDriver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        this.webDriver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        this.webDriver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
         return this;
     }
 
