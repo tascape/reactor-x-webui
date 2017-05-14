@@ -107,7 +107,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         } else {
             browserProxy = null;
         }
-        interactionDelayMillis = sysConfig.getIntProperty(SYSPROP_WEBBROWSER_INTERACTION_DELAY_MILLIS, 200);
+        interactionDelayMillis = sysConfig.getIntProperty(SYSPROP_WEBBROWSER_INTERACTION_DELAY_MILLIS, 0);
     }
 
     public WebBrowser setWebDriver(WebDriver webDriver) {
@@ -148,7 +148,9 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
             case BrowserType.CHROME:
                 return newChrome(devToolsEnabled);
             case BrowserType.SAFARI:
-                return newSafari(devToolsEnabled);
+                throw new UnsupportedOperationException(
+                        "Safari webdriver is having issues, please check https://github.com/SeleniumHQ/selenium/issues/3796");
+//                return newSafari(devToolsEnabled);
         }
         throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + "=" + type
                 + " is not supported. Only " + SUPPORTED_BROWSERS + " are supported currently.");
@@ -204,7 +206,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         logs.getAvailableLogTypes().forEach(type -> {
             try {
                 LogEntries les = logs.get(type);
-                File f = saveAsTextFile(type, "");
+                File f = saveAsTextFile(type, "log");
                 try (OutputStream out = FileUtils.openOutputStream(f)) {
                     IOUtils.writeLines(les.getAll(), IOUtils.LINE_SEPARATOR, out, Charset.defaultCharset());
                 }

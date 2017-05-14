@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * https://github.com/SeleniumHQ/selenium/issues/3796.
  *
  * @author linsong wang
  */
