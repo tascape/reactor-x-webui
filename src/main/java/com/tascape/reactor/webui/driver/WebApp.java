@@ -174,10 +174,10 @@ public abstract class WebApp extends EntityDriver {
     public File takeBrowserScreenshot() {
         try {
             return webBrowser.takeBrowserScreenshot();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             LOG.warn("Cannot take browser screenshot {}", ex.getMessage());
+            return this.captureScreen();
         }
-        return null;
     }
 
     /**
