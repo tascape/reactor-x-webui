@@ -206,12 +206,12 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         logs.getAvailableLogTypes().forEach(type -> {
             try {
                 LogEntries les = logs.get(type);
-                File f = saveAsTextFile(type, "log");
+                File f = saveAsTextFile(this.getClass().getSimpleName().toLowerCase() + "-" + type, "log");
                 try (OutputStream out = FileUtils.openOutputStream(f)) {
                     IOUtils.writeLines(les.getAll(), IOUtils.LINE_SEPARATOR, out, Charset.defaultCharset());
                 }
             } catch (Exception ex) {
-                LOG.trace(ex.getMessage());
+                LOG.trace(ex.getLocalizedMessage());
             }
         });
     }
@@ -325,6 +325,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      *
      * @param checkBox checkBox input element
      * @param checked  checked or not
+     *
+     * @return this
      */
     public WebBrowser setChecked(WebElement checkBox, boolean checked) {
         if (checkBox.isSelected() ^ checked) {

@@ -144,6 +144,7 @@ public class Firefox extends WebBrowser {
         capabilities.setAcceptInsecureCerts(true);
         capabilities.setCapability("marionette", true);
         super.setProxy(capabilities);
+        super.setLogging(capabilities);
 
         long end = System.currentTimeMillis() + 180000;
         while (System.currentTimeMillis() < end) {

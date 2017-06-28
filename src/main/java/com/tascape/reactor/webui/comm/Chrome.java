@@ -43,8 +43,8 @@ public class Chrome extends WebBrowser {
                 System.setProperty(SYSPROP_DRIVER, d.getAbsolutePath());
             } else {
                 throw new RuntimeException("Cannot find chromedriver. Please set system property "
-                    + SYSPROP_DRIVER + ", or download chromedriver into directory " + d.getParent()
-                    + ". Check download page http://chromedriver.storage.googleapis.com/index.html");
+                        + SYSPROP_DRIVER + ", or download chromedriver into directory " + d.getParent()
+                        + ". Check download page http://chromedriver.storage.googleapis.com/index.html");
             }
         } else {
             LOG.info("Use chromedriver specified by system property {}={}", SYSPROP_DRIVER, driver);
@@ -52,11 +52,14 @@ public class Chrome extends WebBrowser {
     }
 
     public Chrome() {
+        System.setProperty("webdriver.chrome.logfile",
+                super.getLogPath().getParent().resolve("chromedriver.log").toString());
         ChromeOptions options = new ChromeOptions();
         options.addArguments(Arrays.asList("allow-running-insecure-content", "ignore-certificate-errors"));
         //options.addExtensions(new File("/path/to/extension.crx"));
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         super.setProxy(capabilities);
+        super.setLogging(capabilities);
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 
         super.setWebDriver(new ChromeDriver(capabilities));
