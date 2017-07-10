@@ -203,17 +203,21 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public void saveWebDriverLogs() throws IOException {
         Logs logs = this.webDriver.manage().logs();
-        logs.getAvailableLogTypes().forEach(type -> {
-            try {
-                LogEntries les = logs.get(type);
-                File f = saveAsTextFile(this.getClass().getSimpleName().toLowerCase() + "-" + type, "log");
-                try (OutputStream out = FileUtils.openOutputStream(f)) {
-                    IOUtils.writeLines(les.getAll(), IOUtils.LINE_SEPARATOR, out, Charset.defaultCharset());
+        try {
+            logs.getAvailableLogTypes().forEach(type -> {
+                try {
+                    LogEntries les = logs.get(type);
+                    File f = saveAsTextFile(this.getClass().getSimpleName().toLowerCase() + "-" + type, "log");
+                    try (OutputStream out = FileUtils.openOutputStream(f)) {
+                        IOUtils.writeLines(les.getAll(), IOUtils.LINE_SEPARATOR, out, Charset.defaultCharset());
+                    }
+                } catch (IOException ex) {
+                    LOG.trace(ex.getLocalizedMessage());
                 }
-            } catch (Exception ex) {
-                LOG.trace(ex.getLocalizedMessage());
-            }
-        });
+            });
+        } catch (Exception ex) {
+            LOG.warn(ex.getLocalizedMessage());
+        }
     }
 
     /**

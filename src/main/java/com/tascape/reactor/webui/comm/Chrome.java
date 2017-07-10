@@ -32,6 +32,8 @@ import org.slf4j.LoggerFactory;
 public class Chrome extends WebBrowser {
     private static final Logger LOG = LoggerFactory.getLogger(Chrome.class);
 
+    private static final String CHROME_VERSION = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE";
+
     public static final String SYSPROP_DRIVER = "webdriver.chrome.driver";
 
     static {
@@ -42,20 +44,27 @@ public class Chrome extends WebBrowser {
                 LOG.info("Use chromedriver at {}", d.getAbsolutePath());
                 System.setProperty(SYSPROP_DRIVER, d.getAbsolutePath());
             } else {
-                throw new RuntimeException("Cannot find chromedriver. Please set system property "
-                        + SYSPROP_DRIVER + ", or download chromedriver into directory " + d.getParent()
-                        + ". Check download page http://chromedriver.storage.googleapis.com/index.html");
+                LOG.warn("Cannot find chromedriver file");
+                downloadDriver(d);
             }
         } else {
             LOG.info("Use chromedriver specified by system property {}={}", SYSPROP_DRIVER, driver);
         }
     }
 
+    private static void downloadDriver(File driverFile) {
+        LOG.info("download latest chromedriver");
+        throw new RuntimeException("Cannot find chromedriver. Please set system property "
+                + SYSPROP_DRIVER + ", or download chromedriver into directory " + driverFile.getParent()
+                + ". Check download page http://chromedriver.storage.googleapis.com/index.html");
+    }
+
     public Chrome() {
         System.setProperty("webdriver.chrome.logfile",
                 super.getLogPath().getParent().resolve("chromedriver.log").toString());
         ChromeOptions options = new ChromeOptions();
-        options.addArguments(Arrays.asList("allow-running-insecure-content", "ignore-certificate-errors"));
+        options.addArguments(Arrays.asList("start-maximized", "allow-running-insecure-content",
+                "ignore-certificate-errors"));
         //options.addExtensions(new File("/path/to/extension.crx"));
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         super.setProxy(capabilities);
