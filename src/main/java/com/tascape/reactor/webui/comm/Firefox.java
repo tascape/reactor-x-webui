@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -60,7 +61,8 @@ public class Firefox extends WebBrowser {
     static {
         String driver = System.getProperty(SYSPROP_DRIVER);
         if (driver == null) {
-            File d = SystemConfiguration.HOME_PATH.resolve("webui").resolve("geckodriver").toFile();
+            String driverFile = SystemUtils.IS_OS_WINDOWS ? "geckodriver.exe" : "geckodriver";
+            File d = SystemConfiguration.HOME_PATH.resolve(DRIVER_DIRECTORY).resolve(driverFile).toFile();
             if (d.exists() && d.isFile()) {
                 LOG.info("Use geckodriver at {}", d.getAbsolutePath());
                 System.setProperty(SYSPROP_DRIVER, d.getAbsolutePath());
@@ -70,7 +72,7 @@ public class Firefox extends WebBrowser {
                         + ". Check download page http://https://github.com/mozilla/geckodriver/releases");
             }
         } else {
-            LOG.info("Use geckodriver specified by system property {}={}", SYSPROP_DRIVER, driver);
+            LOG.info("Use driver specified by system property {}={}", SYSPROP_DRIVER, driver);
         }
     }
 

@@ -18,10 +18,9 @@ package com.tascape.reactor.webui.comm;
 
 import com.tascape.reactor.SystemConfiguration;
 import java.io.File;
-import java.util.Arrays;
 import org.apache.commons.lang3.SystemUtils;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,48 +29,44 @@ import org.slf4j.LoggerFactory;
  *
  * @author linsong wang
  */
-public class Chrome extends WebBrowser {
-    private static final Logger LOG = LoggerFactory.getLogger(Chrome.class);
+public class IE extends WebBrowser {
+    private static final Logger LOG = LoggerFactory.getLogger(IE.class);
 
-    public static final String SYSPROP_DRIVER = "webdriver.chrome.driver";
+    public static final String SYSPROP_DRIVER = "webdriver.ie.driver";
+
+    public static final String DRIVER_NAME = "IEDriverServer.exe";
 
     static {
+        if (!SystemUtils.IS_OS_WINDOWS) {
+            throw new RuntimeException("Cannot run IE browser on non-Windows platforms.");
+        }
+
         String driver = System.getProperty(SYSPROP_DRIVER);
         if (driver == null) {
-            String driverFile = SystemUtils.IS_OS_WINDOWS ? "chromedriver.exe" : "chromedriver";
-            File d = SystemConfiguration.HOME_PATH.resolve(DRIVER_DIRECTORY).resolve(driverFile).toFile();
+            File d = SystemConfiguration.HOME_PATH.resolve(DRIVER_DIRECTORY).resolve(DRIVER_NAME).toFile();
             if (d.exists() && d.isFile()) {
-                LOG.info("Use chromedriver at {}", d.getAbsolutePath());
+                LOG.info("Use " + DRIVER_NAME + " at {}", d.getAbsolutePath());
                 System.setProperty(SYSPROP_DRIVER, d.getAbsolutePath());
             } else {
-                LOG.warn("Cannot find chromedriver file");
-                downloadDriver(d);
+                LOG.warn("Cannot find " + DRIVER_NAME + " file");
+                throw new RuntimeException("Cannot find " + DRIVER_NAME + ". Please set system property "
+                        + SYSPROP_DRIVER + ", or download " + DRIVER_NAME + " into directory " + d.getParent()
+                        + ". Check download page https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
             }
         } else {
             LOG.info("Use driver specified by system property {}={}", SYSPROP_DRIVER, driver);
         }
     }
 
-    private static void downloadDriver(File driverFile) {
-        LOG.info("download latest chromedriver");
-        throw new RuntimeException("Cannot find chromedriver. Please set system property "
-                + SYSPROP_DRIVER + ", or download chromedriver into directory " + driverFile.getParent()
-                + ". Check download page http://chromedriver.storage.googleapis.com/index.html");
-    }
-
-    public Chrome() {
-        System.setProperty("webdriver.chrome.logfile",
-                super.getLogPath().getParent().resolve("chromedriver.log").toString());
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments(Arrays.asList("start-maximized", "allow-running-insecure-content",
-                "ignore-certificate-errors"));
-        //options.addExtensions(new File("/path/to/extension.crx"));
-        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+    public IE() {
+        System.setProperty("webdriver.ie.logfile", super.getLogPath().getParent().resolve(DRIVER_NAME).toString());
+        InternetExplorerOptions options = new InternetExplorerOptions();
+        DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
         super.setProxy(capabilities);
         super.setLogging(capabilities);
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+        capabilities.setCapability("se:ieOptions", options);
 
-        super.setWebDriver(new ChromeDriver(capabilities));
+        super.setWebDriver(new InternetExplorerDriver(capabilities));
     }
 
     /**

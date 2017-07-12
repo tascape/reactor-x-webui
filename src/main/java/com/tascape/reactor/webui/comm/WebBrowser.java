@@ -73,8 +73,14 @@ import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 public abstract class WebBrowser extends EntityCommunication implements WebDriver {
     private static final Logger LOG = LoggerFactory.getLogger(WebBrowser.class);
 
-    public static final List<String> SUPPORTED_BROWSERS = Lists.newArrayList(BrowserType.FIREFOX, BrowserType.CHROME,
-            BrowserType.SAFARI);
+    public static final List<String> SUPPORTED_BROWSERS = Lists.newArrayList(
+            BrowserType.FIREFOX,
+            BrowserType.CHROME,
+            BrowserType.SAFARI,
+            BrowserType.IE,
+            BrowserType.EDGE);
+
+    public static final String DRIVER_DIRECTORY = "webui";
 
     public static final String SYSPROP_WEBBROWSER_TYPE = "reactor.comm.WEBBROWSER_TYPE";
 
@@ -147,6 +153,10 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
                 return newFirefox(devToolsEnabled);
             case BrowserType.CHROME:
                 return newChrome(devToolsEnabled);
+            case BrowserType.IE:
+                return newChrome(devToolsEnabled);
+            case BrowserType.EDGE:
+                return newChrome(devToolsEnabled);
             case BrowserType.SAFARI:
                 throw new UnsupportedOperationException(
                         "Safari webdriver is having issues, please check https://github.com/SeleniumHQ/selenium/issues/3796");
@@ -171,7 +181,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
             return new Firefox(devToolsEnabled);
         } catch (Exception ex) {
             LOG.warn(ex.getMessage());
-            Thread.sleep(1000);
+            Thread.sleep(new Random().nextInt(3000));
             return new Firefox(devToolsEnabled);
         }
     }
@@ -181,8 +191,28 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
             return new Safari();
         } catch (Exception ex) {
             LOG.warn(ex.getMessage());
-            Thread.sleep(1000);
+            Thread.sleep(new Random().nextInt(3000));
             return new Safari();
+        }
+    }
+
+    public static IE newIE(boolean devToolsEnabled) throws Exception {
+        try {
+            return new IE();
+        } catch (Exception ex) {
+            LOG.warn(ex.getMessage());
+            Thread.sleep(new Random().nextInt(3000));
+            return new IE();
+        }
+    }
+
+    public static Edge newEdge(boolean devToolsEnabled) throws Exception {
+        try {
+            return new Edge();
+        } catch (Exception ex) {
+            LOG.warn(ex.getMessage());
+            Thread.sleep(new Random().nextInt(3000));
+            return new Edge();
         }
     }
 
