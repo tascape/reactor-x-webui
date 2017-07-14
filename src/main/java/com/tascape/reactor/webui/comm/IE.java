@@ -26,20 +26,21 @@ import org.slf4j.LoggerFactory;
 
 /**
  * https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver
+ *
  * @author linsong wang
  */
 public class IE extends WebBrowser {
     private static final Logger LOG = LoggerFactory.getLogger(IE.class);
-    
+
     public static final String SYSPROP_DRIVER = "webdriver.ie.driver";
-    
+
     public static final String DRIVER_NAME = "IEDriverServer.exe";
-    
+
     static {
         if (!SystemUtils.IS_OS_WINDOWS) {
             throw new RuntimeException("Cannot run IE browser on non-Windows platforms.");
         }
-        
+
         String driver = System.getProperty(SYSPROP_DRIVER);
         if (driver == null) {
             File d = SystemConfiguration.HOME_PATH.resolve(DRIVER_DIRECTORY).resolve(DRIVER_NAME).toFile();
@@ -56,9 +57,10 @@ public class IE extends WebBrowser {
             LOG.info("Use driver specified by system property {}={}", SYSPROP_DRIVER, driver);
         }
     }
-    
+
     public IE() {
-        System.setProperty("webdriver.ie.driver.logfile", super.getLogPath().getParent().resolve(DRIVER_NAME).toString());
+        System.setProperty("webdriver.ie.driver.logfile",
+                super.getLogPath().getParent().resolve(DRIVER_NAME).toString());
         DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
         capabilities.setJavascriptEnabled(true);
         capabilities.setCapability("ie.ensureCleanSession", true);
@@ -67,7 +69,7 @@ public class IE extends WebBrowser {
         capabilities.setCapability("logFile", super.getLogPath().getParent().resolve(DRIVER_NAME + ".log").toString());
         super.setProxy(capabilities);
         super.setLogging(capabilities);
-        
+
         super.setWebDriver(new InternetExplorerDriver(capabilities));
     }
 
