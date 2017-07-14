@@ -20,7 +20,6 @@ import com.tascape.reactor.SystemConfiguration;
 import java.io.File;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,16 +30,16 @@ import org.slf4j.LoggerFactory;
  */
 public class IE extends WebBrowser {
     private static final Logger LOG = LoggerFactory.getLogger(IE.class);
-
+    
     public static final String SYSPROP_DRIVER = "webdriver.ie.driver";
-
+    
     public static final String DRIVER_NAME = "IEDriverServer.exe";
-
+    
     static {
         if (!SystemUtils.IS_OS_WINDOWS) {
             throw new RuntimeException("Cannot run IE browser on non-Windows platforms.");
         }
-
+        
         String driver = System.getProperty(SYSPROP_DRIVER);
         if (driver == null) {
             File d = SystemConfiguration.HOME_PATH.resolve(DRIVER_DIRECTORY).resolve(DRIVER_NAME).toFile();
@@ -51,21 +50,23 @@ public class IE extends WebBrowser {
                 LOG.warn("Cannot find " + DRIVER_NAME + " file");
                 throw new RuntimeException("Cannot find " + DRIVER_NAME + ". Please set system property "
                         + SYSPROP_DRIVER + ", or download " + DRIVER_NAME + " into directory " + d.getParent()
-                        + ". Check download page https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
+                        + ". Check download page http://selenium-release.storage.googleapis.com/index.html");
             }
         } else {
             LOG.info("Use driver specified by system property {}={}", SYSPROP_DRIVER, driver);
         }
     }
-
+    
     public IE() {
         System.setProperty("webdriver.ie.logfile", super.getLogPath().getParent().resolve(DRIVER_NAME).toString());
-        InternetExplorerOptions options = new InternetExplorerOptions();
         DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
+        capabilities.setJavascriptEnabled(true);
+        capabilities.setCapability("acceptSslCerts", true);
+        capabilities.setCapability("unexpectedAlertBehaviour", "accept");
+        capabilities.setCapability("logFile", super.getLogPath().getParent().resolve(DRIVER_NAME + ".log").toString());
         super.setProxy(capabilities);
         super.setLogging(capabilities);
-        capabilities.setCapability("se:ieOptions", options);
-
+        
         super.setWebDriver(new InternetExplorerDriver(capabilities));
     }
 

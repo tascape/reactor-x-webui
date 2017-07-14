@@ -154,9 +154,9 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
             case BrowserType.CHROME:
                 return newChrome(devToolsEnabled);
             case BrowserType.IE:
-                return newChrome(devToolsEnabled);
+                return newIE(devToolsEnabled);
             case BrowserType.EDGE:
-                return newChrome(devToolsEnabled);
+                return newEdge(devToolsEnabled);
             case BrowserType.SAFARI:
                 throw new UnsupportedOperationException(
                         "Safari webdriver is having issues, please check https://github.com/SeleniumHQ/selenium/issues/3796");
