@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver
  * @author linsong wang
  */
 public class IE extends WebBrowser {
@@ -58,9 +58,10 @@ public class IE extends WebBrowser {
     }
     
     public IE() {
-        System.setProperty("webdriver.ie.logfile", super.getLogPath().getParent().resolve(DRIVER_NAME).toString());
+        System.setProperty("webdriver.ie.driver.logfile", super.getLogPath().getParent().resolve(DRIVER_NAME).toString());
         DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
         capabilities.setJavascriptEnabled(true);
+        capabilities.setCapability("ie.ensureCleanSession", true);
         capabilities.setCapability("acceptSslCerts", true);
         capabilities.setCapability("unexpectedAlertBehaviour", "accept");
         capabilities.setCapability("logFile", super.getLogPath().getParent().resolve(DRIVER_NAME + ".log").toString());
