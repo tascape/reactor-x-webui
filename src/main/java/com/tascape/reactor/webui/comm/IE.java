@@ -59,14 +59,12 @@ public class IE extends WebBrowser {
     }
 
     public IE() {
-        System.setProperty("webdriver.ie.driver.logfile",
-                super.getLogPath().getParent().resolve(DRIVER_NAME).toString());
         DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
         capabilities.setJavascriptEnabled(true);
         capabilities.setCapability("ie.ensureCleanSession", true);
         capabilities.setCapability("acceptSslCerts", true);
         capabilities.setCapability("unexpectedAlertBehaviour", "accept");
-        capabilities.setCapability("logFile", super.getLogPath().getParent().resolve(DRIVER_NAME + ".log").toString());
+//        capabilities.setCapability("logFile", super.getLogPath().getParent().resolve(DRIVER_NAME + ".log").toString());
         super.setProxy(capabilities);
         super.setLogging(capabilities);
 
