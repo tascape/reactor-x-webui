@@ -20,7 +20,6 @@ import com.tascape.reactor.SystemConfiguration;
 import java.io.File;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +70,12 @@ public class IE extends WebBrowser {
         super.setWebDriver(new InternetExplorerDriver(capabilities));
     }
 
+    @Override
+    public void get(String url) {
+        super.get(url);
+        this.ContinueToThisWebsite();
+    }
+
     /**
      * Not support yet.
      *
@@ -97,5 +102,13 @@ public class IE extends WebBrowser {
     @Override
     public int getAjaxLoadTimeMillis(Ajax ajax) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private void ContinueToThisWebsite() {
+        try {
+            this.executeScript("javascript:document.getElementById('overridelink').click()");
+        } catch (Exception ex) {
+            LOG.warn(ex.getLocalizedMessage());
+        }
     }
 }
