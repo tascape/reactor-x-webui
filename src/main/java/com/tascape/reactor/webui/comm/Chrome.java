@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +70,7 @@ public class Chrome extends WebBrowser {
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         super.setProxy(capabilities);
         super.setLogging(capabilities);
+        capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 
         super.setWebDriver(new ChromeDriver(capabilities));

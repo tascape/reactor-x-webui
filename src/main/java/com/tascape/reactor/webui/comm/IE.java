@@ -20,6 +20,7 @@ import com.tascape.reactor.SystemConfiguration;
 import java.io.File;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,7 @@ public class IE extends WebBrowser {
         capabilities.setCapability("ie.ensureCleanSession", true);
         capabilities.setCapability("acceptSslCerts", true);
         capabilities.setCapability("unexpectedAlertBehaviour", "accept");
+        capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 //        capabilities.setCapability("logFile", super.getLogPath().getParent().resolve(DRIVER_NAME + ".log").toString());
         super.setProxy(capabilities);
         super.setLogging(capabilities);
