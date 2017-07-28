@@ -70,12 +70,6 @@ public class IE extends WebBrowser {
         super.setWebDriver(new InternetExplorerDriver(capabilities));
     }
 
-    @Override
-    public void get(String url) {
-        super.get(url);
-        this.ContinueToThisWebsite();
-    }
-
     /**
      * Not support yet.
      *
@@ -104,9 +98,11 @@ public class IE extends WebBrowser {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    private void ContinueToThisWebsite() {
+    @Override
+    public void continueToThisWebsite() {
+        LOG.info("click on '{}'", "Continue to this website (not recommended).");;
         try {
-            this.executeScript("javascript:document.getElementById('overridelink').click()");
+            get("javascript:document.getElementById('overridelink').click()");
         } catch (Exception ex) {
             LOG.warn(ex.getLocalizedMessage());
         }
