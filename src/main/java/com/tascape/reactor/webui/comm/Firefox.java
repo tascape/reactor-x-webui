@@ -142,8 +142,7 @@ public class Firefox extends WebBrowser {
         }
 
         DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-        capabilities.acceptInsecureCerts();
-        capabilities.setAcceptInsecureCerts(true);
+        super.initDesiredCapabilities(capabilities);
         capabilities.setCapability("marionette", true);
         super.setProxy(capabilities);
         super.setLogging(capabilities);

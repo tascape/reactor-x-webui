@@ -61,11 +61,9 @@ public class IE extends WebBrowser {
 
     public IE() {
         DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
-        capabilities.setJavascriptEnabled(true);
+        super.initDesiredCapabilities(capabilities);
         capabilities.setCapability("ie.ensureCleanSession", true);
-        capabilities.setCapability("acceptSslCerts", true);
         capabilities.setCapability("unexpectedAlertBehaviour", "accept");
-        capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 //        capabilities.setCapability("logFile", super.getLogPath().getParent().resolve(DRIVER_NAME + ".log").toString());
         super.setProxy(capabilities);
         super.setLogging(capabilities);

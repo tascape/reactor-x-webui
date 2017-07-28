@@ -129,6 +129,13 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         return this;
     }
 
+    protected WebBrowser initDesiredCapabilities(DesiredCapabilities capabilities) {
+        capabilities.setJavascriptEnabled(true);
+        capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+        capabilities.setAcceptInsecureCerts(true);
+        return this;
+    }
+
     protected WebBrowser setLogging(DesiredCapabilities capabilities) {
         LoggingPreferences logs = new LoggingPreferences();
         logs.enable(LogType.BROWSER, Level.ALL);

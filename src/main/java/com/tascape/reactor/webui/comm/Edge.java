@@ -62,7 +62,7 @@ public class Edge extends WebBrowser {
                 super.getLogPath().getParent().resolve("MicrosoftWebDriver.log").toString());
         EdgeOptions options = new EdgeOptions();
         DesiredCapabilities capabilities = DesiredCapabilities.edge();
-        capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+        super.initDesiredCapabilities(capabilities);
         super.setProxy(capabilities);
         super.setLogging(capabilities);
         capabilities.setCapability(EdgeOptions.CAPABILITY, options);
