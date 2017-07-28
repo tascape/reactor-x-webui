@@ -686,6 +686,9 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         return this.findElement(by);
     }
 
+    public void continueToThisWebsite() {
+    }
+
     /**
      * Sets default timeouts/waits (in second).
      * implicitlyWait = 0
