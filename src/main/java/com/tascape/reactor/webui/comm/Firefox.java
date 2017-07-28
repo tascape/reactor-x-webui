@@ -33,6 +33,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -150,7 +151,8 @@ public class Firefox extends WebBrowser {
         long end = System.currentTimeMillis() + 180000;
         while (System.currentTimeMillis() < end) {
             try {
-                super.setWebDriver(new FirefoxDriver(profile));
+                FirefoxOptions options = new FirefoxOptions().addCapabilities(capabilities).setProfile(profile);
+                super.setWebDriver(new FirefoxDriver(options));
                 break;
             } catch (org.openqa.selenium.WebDriverException ex) {
                 String msg = ex.getMessage();
