@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 import com.tascape.reactor.SystemConfiguration;
 import com.tascape.reactor.Utils;
 import com.tascape.reactor.comm.EntityCommunication;
-import com.tascape.reactor.exception.EntityCommunicationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -260,18 +259,14 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         } catch (Exception ex) {
             LOG.warn(ex.getLocalizedMessage());
         }
+
         File browserLog = logMap.get("browser");
         if (browserLog != null) {
-            if (FileUtils.readLines(browserLog, Charset.defaultCharset()).stream().filter(line -> {
+            FileUtils.readLines(browserLog, Charset.defaultCharset()).forEach(line -> {
                 if (line.contains("[SEVERE]")) {
-                    LOG.error(line);
-                    return true;
-                } else {
-                    return false;
+                    LOG.warn(line);
                 }
-            }).count() > 0) {
-                throw new EntityCommunicationException("'[SEVERE]' found in web browser console log");
-            }
+            });
         }
     }
 
