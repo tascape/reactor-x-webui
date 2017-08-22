@@ -20,13 +20,16 @@ import com.google.common.collect.Lists;
 import com.tascape.reactor.SystemConfiguration;
 import com.tascape.reactor.Utils;
 import com.tascape.reactor.comm.EntityCommunication;
+import com.tascape.reactor.exception.EntityCommunicationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -239,6 +242,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     }
 
     public void saveWebDriverLogs() throws IOException {
+        Map<String, File> logMap = new HashMap<>();
         Logs logs = this.webDriver.manage().logs();
         try {
             logs.getAvailableLogTypes().forEach(type -> {
@@ -247,6 +251,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
                     File f = saveAsTextFile(this.getClass().getSimpleName().toLowerCase() + "-" + type, "log");
                     try (OutputStream out = FileUtils.openOutputStream(f)) {
                         IOUtils.writeLines(les.getAll(), IOUtils.LINE_SEPARATOR, out, Charset.defaultCharset());
+                        logMap.put(type, f);
                     }
                 } catch (IOException ex) {
                     LOG.trace(ex.getLocalizedMessage());
@@ -255,10 +260,23 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         } catch (Exception ex) {
             LOG.warn(ex.getLocalizedMessage());
         }
+        File browserLog = logMap.get("browser");
+        if (browserLog != null) {
+            if (FileUtils.readLines(browserLog, Charset.defaultCharset()).stream().filter(line -> {
+                if (line.contains("[SEVERE]")) {
+                    LOG.error(line);
+                    return true;
+                } else {
+                    return false;
+                }
+            }).count() > 0) {
+                throw new EntityCommunicationException("'[SEVERE]' found in web browser console log");
+            }
+        }
     }
 
     /**
-     * Takes a screen shot of current browser window.
+     * Takes a screen shot of current browserLog window.
      *
      * @return image file
      *
