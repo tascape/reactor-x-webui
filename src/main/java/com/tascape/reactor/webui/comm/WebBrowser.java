@@ -328,6 +328,18 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     }
 
     /**
+     * Clicks on a web element. A delay of milliseconds can be set via integer system property
+     * reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS.
+     *
+     * @param by target web element locator
+     *
+     * @return itself
+     */
+    public WebBrowser click(By by) {
+        return this.click(findElement(by));
+    }
+
+    /**
      * Hovers mouse on a web element. A delay of milliseconds can be set via integer system property
      * reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS.
      *

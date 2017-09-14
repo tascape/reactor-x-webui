@@ -44,4 +44,8 @@ public abstract class WebFragment extends LoadableComponent<WebFragment> {
         this.app = this.page.getApp();
         this.webBrowser = this.app.getWebBrowser();
     }
+    
+    public void takeBrowserScreenshot() {
+        app.takeBrowserScreenshot();
+    }
 }

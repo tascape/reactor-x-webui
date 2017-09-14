@@ -108,4 +108,8 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
     public WebApp getApp() {
         return app;
     }
+    
+    public void takeBrowserScreenshot() {
+        app.takeBrowserScreenshot();
+    }
 }
