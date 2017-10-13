@@ -17,6 +17,7 @@
 package com.tascape.reactor.webui.driver;
 
 import com.tascape.reactor.webui.comm.WebBrowser;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.LoadableComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class WebFragment extends LoadableComponent<WebFragment> {
     private static final Logger LOG = LoggerFactory.getLogger(WebFragment.class);
+
+    protected WebElement element;
 
     protected WebPage page;
 
@@ -44,7 +47,7 @@ public abstract class WebFragment extends LoadableComponent<WebFragment> {
         this.app = this.page.getApp();
         this.webBrowser = this.app.getWebBrowser();
     }
-    
+
     public void takeBrowserScreenshot() {
         app.takeBrowserScreenshot();
     }

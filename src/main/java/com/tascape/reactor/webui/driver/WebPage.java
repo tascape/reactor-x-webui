@@ -48,7 +48,7 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
      */
     public abstract String getPath();
 
-    void setApp(WebApp app) {
+    protected void setApp(WebApp app) {
         this.app = app;
         this.webBrowser = app.getWebBrowser();
     }
@@ -108,7 +108,7 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
     public WebApp getApp() {
         return app;
     }
-    
+
     public void takeBrowserScreenshot() {
         app.takeBrowserScreenshot();
     }
