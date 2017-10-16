@@ -28,6 +28,7 @@ import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
@@ -151,7 +152,10 @@ public class Firefox extends WebBrowser {
         long end = System.currentTimeMillis() + 180000;
         while (System.currentTimeMillis() < end) {
             try {
-                FirefoxOptions options = new FirefoxOptions().addCapabilities(capabilities).setProfile(profile);
+                FirefoxOptions options = new FirefoxOptions()
+                    .setLogLevel(Level.SEVERE)
+                    .addCapabilities(capabilities)
+                    .setProfile(profile);
                 super.setWebDriver(new FirefoxDriver(options));
                 break;
             } catch (org.openqa.selenium.WebDriverException ex) {
