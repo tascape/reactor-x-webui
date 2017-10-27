@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 public abstract class WebFragment extends LoadableComponent<WebFragment> {
     private static final Logger LOG = LoggerFactory.getLogger(WebFragment.class);
 
-    protected WebElement element;
+    protected WebElement fragmentContainer;
 
     protected WebPage page;
 
