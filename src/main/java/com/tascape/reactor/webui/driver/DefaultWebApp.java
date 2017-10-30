@@ -34,8 +34,8 @@ public class DefaultWebApp extends WebApp {
     }
 
     @Override
-    public String getVersion() {
-        return "1.2.2";
+    public void setVersion(String version) {
+        super.version = "1.2.2";
     }
 
     @Override
