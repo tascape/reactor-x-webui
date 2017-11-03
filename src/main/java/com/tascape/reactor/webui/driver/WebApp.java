@@ -39,20 +39,9 @@ public abstract class WebApp extends EntityDriver {
 
     protected WebBrowser webBrowser;
 
-    protected String version;
-
     private String baseUrl;
 
     private final Map<Class<? extends WebPage>, WebPage> loadedPages = new HashMap<>();
-
-    @Override
-    public String getVersion() {
-        return this.version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
 
     /**
      * Loads a URL to open a new page.
