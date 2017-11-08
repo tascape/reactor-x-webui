@@ -76,11 +76,11 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     private static final Logger LOG = LoggerFactory.getLogger(WebBrowser.class);
 
     public static final List<String> SUPPORTED_BROWSERS = Lists.newArrayList(
-            BrowserType.FIREFOX,
-            BrowserType.CHROME,
-            BrowserType.SAFARI,
-            BrowserType.IE,
-            BrowserType.EDGE);
+        BrowserType.FIREFOX,
+        BrowserType.CHROME,
+        BrowserType.SAFARI,
+        BrowserType.IE,
+        BrowserType.EDGE);
 
     public static final String DRIVER_DIRECTORY = "webui";
 
@@ -89,7 +89,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     public static final String SYSPROP_WEBBROWSER_USE_PROXY = "reactor.comm.WEBBROWSER_USE_PROXY";
 
     public static final String SYSPROP_WEBBROWSER_INTERACTION_DELAY_MILLIS
-            = "reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS";
+        = "reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS";
 
     public static final int AJAX_TIMEOUT_SECONDS = 60;
 
@@ -154,7 +154,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         String type = SystemConfiguration.getInstance().getProperty(SYSPROP_WEBBROWSER_TYPE);
         if (type == null) {
             throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + " is not specified. "
-                    + SUPPORTED_BROWSERS + " are supported.");
+                + SUPPORTED_BROWSERS + " are supported.");
         }
         String[] ts = type.split("\\|");
         switch (ts[new Random().nextInt(1000) % ts.length]) {
@@ -168,11 +168,11 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
                 return newEdge(devToolsEnabled);
             case BrowserType.SAFARI:
                 throw new UnsupportedOperationException(
-                        "Safari webdriver is having issues, please check https://github.com/SeleniumHQ/selenium/issues/3796");
+                    "Safari webdriver is having issues, please check https://github.com/SeleniumHQ/selenium/issues/3796");
 //                return newSafari(devToolsEnabled);
         }
         throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + "=" + type
-                + " is not supported. Only " + SUPPORTED_BROWSERS + " are supported currently.");
+            + " is not supported. Only " + SUPPORTED_BROWSERS + " are supported currently.");
     }
 
     public static Chrome newChrome(boolean devToolsEnabled) throws Exception {
@@ -297,9 +297,9 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     public File takeBrowserScreenshot(WebElement webElement) throws IOException {
         File f = this.getLogPath().resolve("screenshot-" + LocalDateTime.now().format(DT_FORMATTER) + ".png").toFile();
         Screenshot screenshot = new AShot()
-                .coordsProvider(new WebDriverCoordsProvider()) //find coordinates with WebDriver API
-                .shootingStrategy(ShootingStrategies.viewportPasting(100))
-                .takeScreenshot(webDriver, webElement);
+            .coordsProvider(new WebDriverCoordsProvider()) //find coordinates with WebDriver API
+            .shootingStrategy(ShootingStrategies.viewportPasting(100))
+            .takeScreenshot(webDriver, webElement);
         ImageIO.write(screenshot.getImage(), "PNG", f);
         LOG.debug("Screenshot {}", f.getAbsolutePath());
         return f;
@@ -350,7 +350,10 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     public WebBrowser hover(WebElement webElement) {
         scrollIntoView(webElement);
         Actions builder = new Actions(this.webDriver);
-        builder.moveToElement(webElement).build().perform();
+        builder.moveToElement(webElement)
+            .moveByOffset(1, 0)
+            .moveByOffset(-1, 0)
+            .build().perform();
         this.delay();
         return this;
     }
