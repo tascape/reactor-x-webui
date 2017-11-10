@@ -271,7 +271,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     }
 
     /**
-     * Takes a screen shot of current browserLog window.
+     * Takes a screen shot of current browser window.
      *
      * @return image file
      *
@@ -761,3 +761,4 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         }
     }
 }
+
