@@ -40,6 +40,7 @@ import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -156,8 +157,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
             throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + " is not specified. "
                 + SUPPORTED_BROWSERS + " are supported.");
         }
-        String[] ts = type.split("\\|");
-        switch (ts[new Random().nextInt(1000) % ts.length]) {
+        String[] types = type.split("\\|");
+        switch (types[RandomUtils.nextInt() % types.length]) {
             case BrowserType.FIREFOX:
                 return newFirefox(devToolsEnabled);
             case BrowserType.CHROME:
