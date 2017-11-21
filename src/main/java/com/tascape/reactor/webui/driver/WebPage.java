@@ -63,11 +63,11 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
     protected void load(WebElement element) {
         LOG.trace("load page by clicking {}", element);
         webBrowser.click(element);
-        isLoaded();
+        checkIsLoaded();
     }
 
-    public void hasLoaded() throws Error {
-        isLoaded();
+    public void hasLoaded() {
+        checkIsLoaded();
     }
 
     public void refresh() {
@@ -111,5 +111,14 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
 
     public void takeBrowserScreenshot() {
         app.takeBrowserScreenshot();
+    }
+
+    private void checkIsLoaded() {
+        try {
+            isLoaded();
+        } catch (Error e) {
+            takeBrowserScreenshot();
+            throw e;
+        }
     }
 }
