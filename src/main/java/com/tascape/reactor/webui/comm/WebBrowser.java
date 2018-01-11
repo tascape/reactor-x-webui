@@ -99,6 +99,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     public static final int HEIGHT = 1080;
 
     public static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("HH.mm.ss.SSS");
+    
+    public static final String SYSPROP_REMOTE_WEB_DRIVER_URL = "reactor.comm.REMOTE_WEB_DRIVER_URL";
 
     private WebDriver webDriver;
 
@@ -250,7 +252,13 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
                     LogEntries les = logs.get(type);
                     File f = saveAsTextFile(this.getClass().getSimpleName().toLowerCase() + "-" + type, "log");
                     try (OutputStream out = FileUtils.openOutputStream(f)) {
-                        IOUtils.writeLines(les.getAll(), IOUtils.LINE_SEPARATOR, out, Charset.defaultCharset());
+                        les.iterator().forEachRemaining(line -> {
+                            try {
+                                IOUtils.write(line.toString(), out, Charset.defaultCharset());
+                            } catch (IOException ex) {
+                                LOG.trace(ex.getLocalizedMessage());
+                            }
+                        });
                         logMap.put(type, f);
                     }
                 } catch (IOException ex) {
@@ -368,8 +376,10 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      */
     public WebBrowser clear(WebElement textBox) {
         textBox.clear();
+        delay(100);
         textBox.sendKeys(Keys.chord(Keys.CONTROL, "a"));
         textBox.sendKeys(Keys.DELETE);
+        delay(100);
         return this;
     }
 
@@ -762,4 +772,3 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         }
     }
 }
-
