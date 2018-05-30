@@ -8,3 +8,15 @@ Reactor extension for web UI automation, based on Selenium WebDriver.
 	<version>1.2.0</version>
 </dependency>
 ```
+### local test report
+  * [reactor-report README](https://github.com/tascape/reactor-report/blob/master/README.md)
+
+### web browser support
+
+#### Google Chrome
+  * Install the latest Google Chrome.
+  * Download the latest [Chrome WebDriver](http://chromedriver.chromium.org/downloads), unzip it as ~/.reactor/webui/chromedriver.
+
+#### Mozilla Firefox
+  * Install the latest Mozilla Firefox.
+  * Download the latest [Firefox Geckodriver](https://github.com/mozilla/geckodriver/releases), unzip it as ~/.reactor/webui/geckodriver.
