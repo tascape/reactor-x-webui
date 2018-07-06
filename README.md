@@ -1,4 +1,6 @@
 # reactor-x-webui
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ftascape%2Freactor-x-webui.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ftascape%2Freactor-x-webui?ref=badge_shield)
+
 Reactor extension for web UI automation, based on Selenium WebDriver.
 
 ```
@@ -20,3 +22,7 @@ Reactor extension for web UI automation, based on Selenium WebDriver.
 #### Mozilla Firefox
   * Install the latest Mozilla Firefox.
   * Download the latest [Firefox Geckodriver](https://github.com/mozilla/geckodriver/releases), unzip it as ~/.reactor/webui/geckodriver.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ftascape%2Freactor-x-webui.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Ftascape%2Freactor-x-webui?ref=badge_large)
