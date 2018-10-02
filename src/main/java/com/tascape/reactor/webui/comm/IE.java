@@ -20,6 +20,7 @@ import com.tascape.reactor.SystemConfiguration;
 import java.io.File;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,15 +60,17 @@ public class IE extends WebBrowser {
     }
 
     public IE() {
+        InternetExplorerOptions options = new InternetExplorerOptions();
+
         DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
         super.initDesiredCapabilities(capabilities);
         capabilities.setCapability("ie.ensureCleanSession", true);
         capabilities.setCapability("unexpectedAlertBehaviour", "accept");
-//        capabilities.setCapability("logFile", super.getLogPath().getParent().resolve(DRIVER_NAME + ".log").toString());
+        //capabilities.setCapability("logFile", super.getLogPath().getParent().resolve(DRIVER_NAME + ".log").toString());
         super.setProxy(capabilities);
         super.setLogging(capabilities);
 
-        super.setWebDriver(new InternetExplorerDriver(capabilities));
+        super.setWebDriver(new InternetExplorerDriver(options.merge(capabilities)));
     }
 
     /**

@@ -6,7 +6,7 @@
 
     <groupId>com.tascape</groupId>
     <artifactId>reactor-x-webui</artifactId>
-    <version>1.4.1</version>
+    <version>1.5.0</version>
     <packaging>jar</packaging>
 
     <name>reactor-x-webui</name>
@@ -24,12 +24,12 @@
         <dependency>
             <groupId>com.tascape</groupId>
             <artifactId>reactor</artifactId>
-            <version>1.2.35</version>
+            <version>1.2.36</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-            <version>3.8.1</version>
+            <version>3.14.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>
@@ -40,27 +40,27 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-firefox-driver</artifactId>
-            <version>3.8.1</version>
+            <version>3.14.0</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
-            <version>3.8.1</version>
+            <version>3.14.0</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-safari-driver</artifactId>
-            <version>3.8.1</version>
+            <version>3.14.0</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-api</artifactId>
-            <version>3.8.1</version>
+            <version>3.14.0</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-support</artifactId>
-            <version>3.8.1</version>
+            <version>3.14.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>

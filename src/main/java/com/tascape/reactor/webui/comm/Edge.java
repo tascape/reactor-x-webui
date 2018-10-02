@@ -60,14 +60,12 @@ public class Edge extends WebBrowser {
     public Edge() {
         System.setProperty("webdriver.edge.logfile",
                 super.getLogPath().getParent().resolve("MicrosoftWebDriver.log").toString());
-        EdgeOptions options = new EdgeOptions();
+        //EdgeOptions options = new EdgeOptions();
         DesiredCapabilities capabilities = DesiredCapabilities.edge();
         super.initDesiredCapabilities(capabilities);
         super.setProxy(capabilities);
         super.setLogging(capabilities);
-        capabilities.setCapability(EdgeOptions.CAPABILITY, options);
-
-        super.setWebDriver(new EdgeDriver(capabilities));
+        super.setWebDriver(EdgeDriver.builder().oneOf(capabilities).build());
     }
 
     /**

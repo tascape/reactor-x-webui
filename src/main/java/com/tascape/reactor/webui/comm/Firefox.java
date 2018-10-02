@@ -28,12 +28,12 @@ import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
@@ -153,8 +153,8 @@ public class Firefox extends WebBrowser {
         while (System.currentTimeMillis() < end) {
             try {
                 FirefoxOptions options = new FirefoxOptions()
-                    .setLogLevel(Level.SEVERE)
-                    .addCapabilities(capabilities)
+                    .setLogLevel(FirefoxDriverLogLevel.FATAL)
+                    .merge(capabilities)
                     .setProfile(profile);
                 super.setWebDriver(new FirefoxDriver(options));
                 break;

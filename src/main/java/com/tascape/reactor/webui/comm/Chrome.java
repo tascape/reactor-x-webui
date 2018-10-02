@@ -66,13 +66,14 @@ public class Chrome extends WebBrowser {
         options.addArguments(Arrays.asList("start-maximized", "allow-running-insecure-content",
                 "ignore-certificate-errors"));
         //options.addExtensions(new File("/path/to/extension.crx"));
+
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         super.initDesiredCapabilities(capabilities);
         super.setProxy(capabilities);
         super.setLogging(capabilities);
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 
-        super.setWebDriver(new ChromeDriver(capabilities));
+        super.setWebDriver(new ChromeDriver(options.merge(capabilities)));
     }
 
     /**

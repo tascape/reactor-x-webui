@@ -5,7 +5,7 @@ Reactor extension for web UI automation, based on Selenium WebDriver.
 <dependency>
 	<groupId>com.tascape</groupId>
 	<artifactId>reactor-x-webui</artifactId>
-	<version>1.4.1</version>
+	<version>1.5.0</version>
 </dependency>
 ```
 ### local test report

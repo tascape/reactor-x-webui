@@ -32,11 +32,10 @@ public class Safari extends WebBrowser {
 
     public Safari() {
         SafariOptions options = new SafariOptions();
-        options.setUseCleanSession(true);
         DesiredCapabilities capabilities = DesiredCapabilities.safari();
+        capabilities.setAcceptInsecureCerts(true);
         super.setProxy(capabilities);
-        capabilities.setCapability(SafariOptions.CAPABILITY, options);
-        super.setWebDriver(new SafariDriver(capabilities));
+        super.setWebDriver(new SafariDriver(options.merge(capabilities)));
     }
 
     /**
