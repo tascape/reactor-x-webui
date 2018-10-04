@@ -400,6 +400,20 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     }
 
     /**
+     * Submits the form. A delay of milliseconds can be set via integer system property
+     * reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS.
+     *
+     * @param formElement form element
+     *
+     * @return itself
+     */
+    public WebBrowser submit(WebElement formElement) {
+        this.delay();
+        formElement.submit();
+        return this;
+    }
+
+    /**
      * Sets a check box state. A delay of milliseconds can be set via integer system property
      * reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS.
      *
@@ -734,7 +748,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * pageLoadTimeout = 10
      * setScriptTimeout = 10
      *
-     * @return
+     * @return self
      */
     public WebBrowser setDefaultTimeouts() {
         this.webDriver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
