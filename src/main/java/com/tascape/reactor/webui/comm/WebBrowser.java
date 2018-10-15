@@ -47,6 +47,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
@@ -59,7 +60,6 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -87,12 +87,14 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public static final String DRIVER_DIRECTORY = "webui";
 
-    public static final String SYSPROP_WEBBROWSER_TYPE = "reactor.comm.WEBBROWSER_TYPE";
+    public static final String SYSPROP_WEBBROWSER_TYPE = "reactor.comm.webbrowser.TYPE";
 
-    public static final String SYSPROP_WEBBROWSER_USE_PROXY = "reactor.comm.WEBBROWSER_USE_PROXY";
+    public static final String SYSPROP_WEBBROWSER_HEADLESS = "reactor.comm.webbrowser.HEADLESS";
+
+    public static final String SYSPROP_WEBBROWSER_USE_PROXY = "reactor.comm.webbrowser.USE_PROXY";
 
     public static final String SYSPROP_WEBBROWSER_INTERACTION_DELAY_MILLIS
-            = "reactor.comm.WEBBROWSER_INTERACTION_DELAY_MILLIS";
+            = "reactor.comm.webbrowser.INTERACTION_DELAY_MILLIS";
 
     public static final int AJAX_TIMEOUT_SECONDS = 60;
 
@@ -129,21 +131,18 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         return this;
     }
 
-    protected WebBrowser setProxy(DesiredCapabilities capabilities) {
+    protected boolean isHeadless() {
+        return sysConfig.getBooleanProperty(SYSPROP_WEBBROWSER_HEADLESS, false);
+    }
+
+    protected WebBrowser setProxy(MutableCapabilities capabilities) {
         if (browserProxy != null) {
             capabilities.setCapability(CapabilityType.PROXY, ClientUtil.createSeleniumProxy(browserProxy));
         }
         return this;
     }
 
-    protected WebBrowser initDesiredCapabilities(DesiredCapabilities capabilities) {
-        capabilities.setJavascriptEnabled(true);
-        capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-        capabilities.setAcceptInsecureCerts(true);
-        return this;
-    }
-
-    protected WebBrowser setLogging(DesiredCapabilities capabilities) {
+    protected WebBrowser setLogging(MutableCapabilities capabilities) {
         LoggingPreferences logs = new LoggingPreferences();
         logs.enable(LogType.BROWSER, Level.ALL);
         logs.enable(LogType.CLIENT, Level.ALL);
@@ -610,6 +609,10 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
             LOG.warn("Cannot execute javascript");
             return null;
         }
+    }
+
+    public WebBrowser setWindowSize(ScreenResolution screenResolution) {
+        return this.setWindowSize(screenResolution.width, screenResolution.height);
     }
 
     public WebBrowser setWindowSize(int width, int height) {

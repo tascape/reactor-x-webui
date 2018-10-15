@@ -22,7 +22,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,12 +59,11 @@ public class Edge extends WebBrowser {
     public Edge() {
         System.setProperty("webdriver.edge.logfile",
                 super.getLogPath().getParent().resolve("MicrosoftWebDriver.log").toString());
-        //EdgeOptions options = new EdgeOptions();
-        DesiredCapabilities capabilities = DesiredCapabilities.edge();
-        super.initDesiredCapabilities(capabilities);
-        super.setProxy(capabilities);
-        super.setLogging(capabilities);
-        super.setWebDriver(EdgeDriver.builder().oneOf(capabilities).build());
+        EdgeOptions options = new EdgeOptions();
+        options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+        super.setProxy(options);
+        super.setLogging(options);
+        super.setWebDriver(EdgeDriver.builder().oneOf(options).build());
     }
 
     /**

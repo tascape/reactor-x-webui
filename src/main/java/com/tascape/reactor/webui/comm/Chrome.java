@@ -22,7 +22,6 @@ import java.util.Arrays;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,17 +62,19 @@ public class Chrome extends WebBrowser {
         System.setProperty("webdriver.chrome.logfile",
                 super.getLogPath().getParent().resolve("chromedriver.log").toString());
         ChromeOptions options = new ChromeOptions();
-        options.addArguments(Arrays.asList("start-maximized", "allow-running-insecure-content",
-                "ignore-certificate-errors"));
+        options.setAcceptInsecureCerts(true);
+        options.addArguments(Arrays.asList(
+                "allow-running-insecure-content",
+                "disable-dev-shm-usage",
+                "ignore-certificate-errors",
+                "no-sandbox",
+                "start-maximized"));
         //options.addExtensions(new File("/path/to/extension.crx"));
+        options.setHeadless(super.isHeadless());
+        super.setProxy(options);
+        super.setLogging(options);
 
-        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        super.initDesiredCapabilities(capabilities);
-        super.setProxy(capabilities);
-        super.setLogging(capabilities);
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-
-        super.setWebDriver(new ChromeDriver(options.merge(capabilities)));
+        super.setWebDriver(new ChromeDriver(options));
     }
 
     /**

@@ -37,7 +37,6 @@ import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,19 +142,18 @@ public class Firefox extends WebBrowser {
             this.firebug.updateProfile(profile);
         }
 
-        DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-        super.initDesiredCapabilities(capabilities);
-        capabilities.setCapability("marionette", true);
-        super.setProxy(capabilities);
-        super.setLogging(capabilities);
-
         long end = System.currentTimeMillis() + 180000;
         while (System.currentTimeMillis() < end) {
             try {
-                FirefoxOptions options = new FirefoxOptions()
-                    .setLogLevel(FirefoxDriverLogLevel.FATAL)
-                    .merge(capabilities)
-                    .setProfile(profile);
+                FirefoxOptions options = new FirefoxOptions();
+                options.setAcceptInsecureCerts(true);
+                options.setCapability("marionette", true);
+                super.setProxy(options);
+                super.setLogging(options);
+                options.setLogLevel(FirefoxDriverLogLevel.FATAL);
+                options.setProfile(profile);
+                options.setHeadless(super.isHeadless());
+
                 super.setWebDriver(new FirefoxDriver(options));
                 break;
             } catch (org.openqa.selenium.WebDriverException ex) {

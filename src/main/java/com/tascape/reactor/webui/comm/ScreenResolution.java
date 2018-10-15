@@ -21,11 +21,18 @@ package com.tascape.reactor.webui.comm;
  * @author linsong wang
  */
 public enum ScreenResolution {
+    DESKTOP_1024_768(1024, 768),
+    DESKTOP_1280_800(1280, 800),
+    DESKTOP_1280_1024(1280, 1024),
+    DESKTOP_1366_768(1366, 768),
+    DESKTOP_1920_1080(1920, 1080),
     SR_768_1024(768, 1024), // iPad mini
     SR_640_1136(640, 1136), // iPhone 5
-    SR_750_1334(750, 1334), // iPhone 6
-    SR_1080_1920(1080, 1920), // iPhone 6+
+    SR_750_1334(750, 1334), // iPhone 6, 8
+    SR_1080_1920(1080, 1920), // iPhone 6+, 6s+, 7+, 8+
+    SR_1125_2346(1125, 2436), // iPhone X
     SR_1536_2048(1536, 2048), // iPad 3
+    SR_2048_2732(2048, 2732), // iPad Pro 12.9-inch (2nd generation)
     SR_1440_2560(1440, 2560); // galaxy s6
 
     public final int width;
