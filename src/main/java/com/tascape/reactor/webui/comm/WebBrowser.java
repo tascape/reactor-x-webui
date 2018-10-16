@@ -727,6 +727,22 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         return wait.until(ExpectedConditions.visibilityOfElementLocated(by));
     }
 
+    /**
+     * Waits for a specific element to appear.
+     *
+     * @param element The target element
+     * @param seconds wait timeout
+     *
+     * @return The first matching element on the current page
+     *
+     * @throws org.openqa.selenium.TimeoutException if the timeout expires.
+     */
+    public WebElement waitForElement(WebElement element, int seconds) {
+        LOG.debug("Wait for element {} to appear", element);
+        WebDriverWait wait = new WebDriverWait(this, seconds);
+        return wait.until(ExpectedConditions.visibilityOf(element));
+    }
+
     public WebBrowser waitForNoElement(final By by, int seconds) {
         LOG.debug("Wait for element {} to disappear", by);
         WebDriverWait wait = new WebDriverWait(this, seconds);
@@ -773,6 +789,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     /**
      * Sets default timeouts/waits (in second).
+     *
      * implicitlyWait = 0
      * pageLoadTimeout = 10
      * setScriptTimeout = 10
@@ -780,9 +797,22 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
      * @return self
      */
     public WebBrowser setDefaultTimeouts() {
-        this.webDriver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-        this.webDriver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
-        this.webDriver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
+        return this.setTimeouts(0, 10, 10);
+    }
+
+    /**
+     * Sets timeouts/waits (in second).
+     *
+     * @param implicitlyWait  the timeout
+     * @param pageLoadTimeout the timeout
+     * @param scriptTimeout   the timeout
+     *
+     * @return self
+     */
+    public WebBrowser setTimeouts(int implicitlyWait, int pageLoadTimeout, int scriptTimeout) {
+        this.webDriver.manage().timeouts().implicitlyWait(implicitlyWait, TimeUnit.SECONDS);
+        this.webDriver.manage().timeouts().pageLoadTimeout(pageLoadTimeout, TimeUnit.SECONDS);
+        this.webDriver.manage().timeouts().setScriptTimeout(scriptTimeout, TimeUnit.SECONDS);
         return this;
     }
 
