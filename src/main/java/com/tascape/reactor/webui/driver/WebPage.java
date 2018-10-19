@@ -75,6 +75,16 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
     }
 
     /**
+     * Blocks current thread for specified milliseconds. Shortcut to Thread.sleep.
+     * Throws RuntimeException.
+     *
+     * @param millis milliseconds
+     */
+    public void delay(int millis) {
+        webBrowser.delay(millis);
+    }
+
+    /**
      * Shows a fragment of a web page.
      *
      * @param <T>           fragment type
