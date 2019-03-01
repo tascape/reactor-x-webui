@@ -67,8 +67,7 @@ public class Chrome extends WebBrowser {
                 "allow-running-insecure-content",
                 "disable-dev-shm-usage",
                 "ignore-certificate-errors",
-                "no-sandbox",
-                "start-maximized"));
+                "no-sandbox"));
         //options.addExtensions(new File("/path/to/extension.crx"));
         options.setHeadless(super.isHeadless());
         super.setProxy(options);
