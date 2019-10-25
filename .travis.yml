@@ -3,6 +3,6 @@ jdk: oraclejdk8
 
 branches:
   only:
-    - master 
+    - master
 
 script: mvn clean install
