@@ -296,6 +296,20 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     }
 
     /**
+     * Takes a screen shot of current browser window.
+     *
+     * @return this web browser instance
+     */
+    public WebBrowser screenshot() {
+        try {
+            this.takeBrowserScreenshot();
+        } catch (IOException ex) {
+            LOG.warn("Cannot take browser screenshot");
+        }
+        return this;
+    }
+
+    /**
      * Takes a screen shot of specified web element.
      *
      * @param webElement specified web element
