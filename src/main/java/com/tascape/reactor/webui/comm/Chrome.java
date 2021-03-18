@@ -30,9 +30,10 @@ import org.slf4j.LoggerFactory;
  * @author linsong wang
  */
 public class Chrome extends WebBrowser {
-    private static final Logger LOG = LoggerFactory.getLogger(Chrome.class);
 
     public static final String SYSPROP_DRIVER = "webdriver.chrome.driver";
+
+    private static final Logger LOG = LoggerFactory.getLogger(Chrome.class);
 
     static {
         String driver = System.getProperty(SYSPROP_DRIVER);
@@ -54,20 +55,20 @@ public class Chrome extends WebBrowser {
     private static void downloadDriver(File driverFile) {
         LOG.info("download latest chromedriver");
         throw new RuntimeException("Cannot find chromedriver. Please set system property "
-                + SYSPROP_DRIVER + ", or download chromedriver into directory " + driverFile.getParent()
-                + ". Check download page http://chromedriver.storage.googleapis.com/index.html");
+            + SYSPROP_DRIVER + ", or download chromedriver into directory " + driverFile.getParent()
+            + ". Check download page http://chromedriver.storage.googleapis.com/index.html");
     }
 
     public Chrome() {
         System.setProperty("webdriver.chrome.logfile",
-                super.getLogPath().getParent().resolve("chromedriver.log").toString());
+            super.getLogPath().getParent().resolve("chromedriver.log").toString());
         ChromeOptions options = new ChromeOptions();
         options.setAcceptInsecureCerts(true);
         options.addArguments(Arrays.asList(
-                "allow-running-insecure-content",
-                "disable-dev-shm-usage",
-                "ignore-certificate-errors",
-                "no-sandbox"));
+            "allow-running-insecure-content",
+            "disable-dev-shm-usage",
+            "ignore-certificate-errors",
+            "no-sandbox"));
         //options.addExtensions(new File("/path/to/extension.crx"));
         options.setHeadless(super.isHeadless());
         super.setProxy(options);
