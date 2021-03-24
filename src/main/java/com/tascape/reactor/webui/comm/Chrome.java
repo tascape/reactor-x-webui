@@ -19,6 +19,7 @@ package com.tascape.reactor.webui.comm;
 import com.tascape.reactor.SystemConfiguration;
 import java.io.File;
 import java.util.Arrays;
+import java.util.UUID;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -60,8 +61,10 @@ public class Chrome extends WebBrowser {
     }
 
     public Chrome() {
+        String logFile = "chromedriver-" + sysConfig.getHostName() + "-" + Thread.currentThread().getName() + "-" + UUID.randomUUID() + ".log"
+            .replaceAll("[^a-zA-Z0-9\\.\\-]", "-");
         System.setProperty("webdriver.chrome.logfile",
-            super.getLogPath().getParent().resolve("chromedriver.log").toString());
+            super.getLogPath().getParent().resolve(logFile).toString());
         ChromeOptions options = new ChromeOptions();
         options.setAcceptInsecureCerts(true);
         options.addArguments(Arrays.asList(
