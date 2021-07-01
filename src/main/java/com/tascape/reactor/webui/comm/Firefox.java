@@ -36,7 +36,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.firefox.ProfilesIni;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,6 @@ import org.slf4j.LoggerFactory;
  * @author linsong wang
  */
 public class Firefox extends WebBrowser {
-    private static final Logger LOG = LoggerFactory.getLogger(Firefox.class);
 
     public static final String SYSPROP_DRIVER = "webdriver.gecko.driver";
 
@@ -59,6 +58,8 @@ public class Firefox extends WebBrowser {
 
     public static final String DEFAULT_FF_PROFILE_NAME = "default";
 
+    private static final Logger LOG = LoggerFactory.getLogger(Firefox.class);
+
     static {
         String driver = System.getProperty(SYSPROP_DRIVER);
         if (driver == null) {
@@ -69,20 +70,12 @@ public class Firefox extends WebBrowser {
                 System.setProperty(SYSPROP_DRIVER, d.getAbsolutePath());
             } else {
                 throw new RuntimeException("Cannot find geckodriver. Please set system property "
-                        + SYSPROP_DRIVER + ", or download geckodriver into directory " + d.getParent()
-                        + ". Check download page http://https://github.com/mozilla/geckodriver/releases");
+                    + SYSPROP_DRIVER + ", or download geckodriver into directory " + d.getParent()
+                    + ". Check download page http://https://github.com/mozilla/geckodriver/releases");
             }
         } else {
             LOG.info("Use driver specified by system property {}={}", SYSPROP_DRIVER, driver);
         }
-    }
-
-    public Firebug getFirebug() {
-        return firebug;
-    }
-
-    public static interface Extension {
-        public void updateProfile(FirefoxProfile profile);
     }
 
     private final Path downloadDir = Files.createTempDirectory("ff-download");
@@ -166,6 +159,10 @@ public class Firefox extends WebBrowser {
         }
     }
 
+    public Firebug getFirebug() {
+        return firebug;
+    }
+
     @Override
     public int getPageLoadTimeMillis(String url) throws Exception {
         return this.firebug.getPageLoadTimeMillis(url);
@@ -174,6 +171,14 @@ public class Firefox extends WebBrowser {
     @Override
     public int getAjaxLoadTimeMillis(Ajax ajax) throws Exception {
         return this.firebug.getAjaxLoadTimeMillis(ajax);
+    }
+
+    public Path getDownloadDir() {
+        return downloadDir;
+    }
+
+    public static interface Extension {
+        public void updateProfile(FirefoxProfile profile);
     }
 
     public class Firebug implements Extension {
@@ -198,6 +203,21 @@ public class Firefox extends WebBrowser {
                 Firefox.this.waitForElement(ajax.getByAppear(), AJAX_TIMEOUT_SECONDS);
             }
             return this.getLastLoadTimeMillis(start);
+        }
+
+        // https://github.com/firebug/har-export-trigger
+        // https://addons.mozilla.org/en-US/firefox/addon/har-export-trigger/
+        @Override
+        public void updateProfile(FirefoxProfile profile) {
+            profile.setPreference("extensions.firebug.onByDefault", true);
+            profile.setPreference("extensions.firebug.allPagesActivation", "on");
+            profile.setPreference("extensions.firebug.defaultPanelName", "net");
+            profile.setPreference("extensions.firebug.net.enableSites", true);
+            profile.setPreference("extensions.netmonitor.har.autoConnect", true);
+            profile.setPreference("extensions.netmonitor.har.contentAPIToken", tokenNetExport);
+            profile.setPreference("devtools.netmonitor.har.enableAutoExportToFile", true);
+            profile.setPreference("devtools.netmonitor.har.defaultLogDir", harPath.toFile().getAbsolutePath());
+            profile.setPreference("devtools.netmonitor.har.pageLoadedTimeout", 1500); // default 1500
         }
 
         private int getLastLoadTimeMillis(long startMillis) throws IOException, ParseException, InterruptedException {
@@ -253,24 +273,6 @@ public class Firefox extends WebBrowser {
             throw new IOException("Cannot load firebug netexport har file");
         }
 
-        // https://github.com/firebug/har-export-trigger
-        // https://addons.mozilla.org/en-US/firefox/addon/har-export-trigger/
-        @Override
-        public void updateProfile(FirefoxProfile profile) {
-            profile.setPreference("extensions.firebug.onByDefault", true);
-            profile.setPreference("extensions.firebug.allPagesActivation", "on");
-            profile.setPreference("extensions.firebug.defaultPanelName", "net");
-            profile.setPreference("extensions.firebug.net.enableSites", true);
-            profile.setPreference("extensions.netmonitor.har.autoConnect", true);
-            profile.setPreference("extensions.netmonitor.har.contentAPIToken", tokenNetExport);
-            profile.setPreference("devtools.netmonitor.har.enableAutoExportToFile", true);
-            profile.setPreference("devtools.netmonitor.har.defaultLogDir", harPath.toFile().getAbsolutePath());
-            profile.setPreference("devtools.netmonitor.har.pageLoadedTimeout", 1500); // default 1500
-        }
-    }
-
-    public Path getDownloadDir() {
-        return downloadDir;
     }
 }
 
@@ -473,7 +475,7 @@ class HarLog {
         final String format = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
         long start = Long.MAX_VALUE;
         long end = Long.MIN_VALUE;
-        for (Entry entry : this.entries) {
+        for (Entry entry: this.entries) {
             long s = Utils.getTime(entry.startedDateTime, format);
             if (s > startMillis) {
                 start = Math.min(start, s);
@@ -494,7 +496,7 @@ class HarLog {
         Page p = this.pages.get(pages.size() - 1);
         LOG.debug("{}", p.pageTimings.toString);
         String id = p.id;
-        for (Entry e : entries) {
+        for (Entry e: entries) {
             if (e.pageref.equals(p.id)) {
                 LOG.debug("Page URL {}", e.request.url);
                 break;

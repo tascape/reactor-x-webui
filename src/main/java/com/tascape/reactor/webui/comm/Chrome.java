@@ -19,8 +19,10 @@ package com.tascape.reactor.webui.comm;
 import com.tascape.reactor.SystemConfiguration;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.UUID;
 import org.apache.commons.lang3.SystemUtils;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
@@ -33,6 +35,8 @@ import org.slf4j.LoggerFactory;
 public class Chrome extends WebBrowser {
 
     public static final String SYSPROP_DRIVER = "webdriver.chrome.driver";
+
+    public static final String SYSPROP_OPTIONS = "webdriver.chrome.options";
 
     private static final Logger LOG = LoggerFactory.getLogger(Chrome.class);
 
@@ -60,23 +64,17 @@ public class Chrome extends WebBrowser {
             + ". Check download page http://chromedriver.storage.googleapis.com/index.html");
     }
 
-    public Chrome() {
+    public Chrome() throws InterruptedException {
         String logFile = "chromedriver-" + sysConfig.getHostName() + "-" + Thread.currentThread().getName() + "-" + UUID.randomUUID() + ".log"
             .replaceAll("[^a-zA-Z0-9\\.\\-]", "-");
         System.setProperty("webdriver.chrome.logfile",
             super.getLogPath().getParent().resolve(logFile).toString());
-        ChromeOptions options = new ChromeOptions();
-        options.setAcceptInsecureCerts(true);
-        options.addArguments(Arrays.asList(
-            "allow-running-insecure-content",
-            "disable-dev-shm-usage",
-            "ignore-certificate-errors",
-            "no-sandbox"));
-        //options.addExtensions(new File("/path/to/extension.crx"));
-        options.setHeadless(super.isHeadless());
+        ChromeOptions options = this.getChromeOptions()
+            .setAcceptInsecureCerts(true)
+            .setPageLoadStrategy(PageLoadStrategy.NORMAL)
+            .setHeadless(super.isHeadless());
         super.setProxy(options);
         super.setLogging(options);
-
         super.setWebDriver(new ChromeDriver(options));
     }
 
@@ -106,5 +104,28 @@ public class Chrome extends WebBrowser {
     @Override
     public int getAjaxLoadTimeMillis(Ajax ajax) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private ChromeOptions getChromeOptions() {
+        ChromeOptions options = new ChromeOptions();
+        Set<String> optionStrings = Set.of(
+            "allow-running-insecure-content",
+            "disable-dev-shm-usage",
+            "disable-popup-blocking",
+            "disable-infobars",
+            "ignore-certificate-errors",
+            "no-sandbox",
+            "start-maximized");
+        String[] customeOptions = sysConfig.getProperty(Chrome.SYSPROP_OPTIONS, "").split(",");
+        if (customeOptions.length == 0) {
+            LOG.debug("you can specify comma-delimited chrome options with system property {}", Chrome.SYSPROP_OPTIONS);
+        }
+        optionStrings.addAll(Arrays.asList(customeOptions));
+        optionStrings.forEach(o -> {
+            LOG.debug("Chrome option {}", optionStrings);
+        });
+        options.addArguments(optionStrings.toArray(new String[0]));
+        //options.addExtensions(new File("/path/to/extension.crx"));
+        return options;
     }
 }

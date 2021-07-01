@@ -71,6 +71,7 @@ public abstract class WebPage extends LoadableComponent<WebPage> {
     }
 
     public void refresh() {
+        LOG.debug("refresh page {}", webBrowser.getWebDriver().getCurrentUrl());
         webBrowser.navigate().refresh();
     }
 

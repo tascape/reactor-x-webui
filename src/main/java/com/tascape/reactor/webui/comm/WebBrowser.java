@@ -76,14 +76,13 @@ import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
  * @author linsong wang
  */
 public abstract class WebBrowser extends EntityCommunication implements WebDriver {
-    private static final Logger LOG = LoggerFactory.getLogger(WebBrowser.class);
 
     public static final List<String> SUPPORTED_BROWSERS = Lists.newArrayList(
-            BrowserType.FIREFOX,
-            BrowserType.CHROME,
-            BrowserType.SAFARI,
-            BrowserType.IE,
-            BrowserType.EDGE);
+        BrowserType.FIREFOX,
+        BrowserType.CHROME,
+        BrowserType.SAFARI,
+        BrowserType.IE,
+        BrowserType.EDGE);
 
     public static final String DRIVER_DIRECTORY = "webui";
 
@@ -94,7 +93,7 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     public static final String SYSPROP_WEBBROWSER_USE_PROXY = "reactor.comm.webbrowser.USE_PROXY";
 
     public static final String SYSPROP_WEBBROWSER_INTERACTION_DELAY_MILLIS
-            = "reactor.comm.webbrowser.INTERACTION_DELAY_MILLIS";
+        = "reactor.comm.webbrowser.INTERACTION_DELAY_MILLIS";
 
     public static final int AJAX_TIMEOUT_SECONDS = 60;
 
@@ -106,59 +105,13 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public static final String SYSPROP_REMOTE_WEB_DRIVER_URL = "reactor.comm.REMOTE_WEB_DRIVER_URL";
 
-    private WebDriver webDriver;
-
-    private Actions actions;
-
-    protected final BrowserMobProxy browserProxy;
-
-    private final int interactionDelayMillis;
-
-    protected WebBrowser() {
-        if (sysConfig.getBooleanProperty(SYSPROP_WEBBROWSER_USE_PROXY, false)) {
-            browserProxy = new BrowserMobProxyServer();
-            browserProxy.setTrustAllServers(true);
-            browserProxy.start();
-        } else {
-            browserProxy = null;
-        }
-        interactionDelayMillis = sysConfig.getIntProperty(SYSPROP_WEBBROWSER_INTERACTION_DELAY_MILLIS, 0);
-    }
-
-    public WebBrowser setWebDriver(WebDriver webDriver) {
-        this.webDriver = webDriver;
-        this.actions = new Actions(this.webDriver);
-        return this;
-    }
-
-    protected boolean isHeadless() {
-        return sysConfig.getBooleanProperty(SYSPROP_WEBBROWSER_HEADLESS, false);
-    }
-
-    protected WebBrowser setProxy(MutableCapabilities capabilities) {
-        if (browserProxy != null) {
-            capabilities.setCapability(CapabilityType.PROXY, ClientUtil.createSeleniumProxy(browserProxy));
-        }
-        return this;
-    }
-
-    protected WebBrowser setLogging(MutableCapabilities capabilities) {
-        LoggingPreferences logs = new LoggingPreferences();
-        logs.enable(LogType.BROWSER, Level.ALL);
-        logs.enable(LogType.CLIENT, Level.ALL);
-        logs.enable(LogType.DRIVER, Level.ALL);
-        logs.enable(LogType.PERFORMANCE, Level.ALL);
-        logs.enable(LogType.PROFILER, Level.ALL);
-        logs.enable(LogType.SERVER, Level.ALL);
-        capabilities.setCapability(CapabilityType.LOGGING_PREFS, logs);
-        return this;
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(WebBrowser.class);
 
     public static WebBrowser newBrowser(boolean devToolsEnabled) throws Exception {
         String type = SystemConfiguration.getInstance().getProperty(SYSPROP_WEBBROWSER_TYPE);
         if (type == null) {
             throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + " is not specified. "
-                    + SUPPORTED_BROWSERS + " are supported.");
+                + SUPPORTED_BROWSERS + " are supported.");
         }
         String[] types = type.split("\\|");
         switch (types[RandomUtils.nextInt() % types.length]) {
@@ -172,11 +125,11 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
                 return newEdge(devToolsEnabled);
             case BrowserType.SAFARI:
                 throw new UnsupportedOperationException(
-                        "Safari webdriver is having issues, please check https://github.com/SeleniumHQ/selenium/issues/3796");
+                    "Safari webdriver is having issues, please check https://github.com/SeleniumHQ/selenium/issues/3796");
 //                return newSafari(devToolsEnabled);
         }
         throw new RuntimeException("System property " + SYSPROP_WEBBROWSER_TYPE + "=" + type
-                + " is not supported. Only " + SUPPORTED_BROWSERS + " are supported currently.");
+            + " is not supported. Only " + SUPPORTED_BROWSERS + " are supported currently.");
     }
 
     public static Chrome newChrome(boolean devToolsEnabled) throws Exception {
@@ -227,6 +180,31 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
             Thread.sleep(new Random().nextInt(3000));
             return new Edge();
         }
+    }
+
+    protected final BrowserMobProxy browserProxy;
+
+    private WebDriver webDriver;
+
+    private Actions actions;
+
+    private final int interactionDelayMillis;
+
+    protected WebBrowser() {
+        if (sysConfig.getBooleanProperty(SYSPROP_WEBBROWSER_USE_PROXY, false)) {
+            browserProxy = new BrowserMobProxyServer();
+            browserProxy.setTrustAllServers(true);
+            browserProxy.start();
+        } else {
+            browserProxy = null;
+        }
+        interactionDelayMillis = sysConfig.getIntProperty(SYSPROP_WEBBROWSER_INTERACTION_DELAY_MILLIS, 0);
+    }
+
+    public WebBrowser setWebDriver(WebDriver webDriver) {
+        this.webDriver = webDriver;
+        this.actions = new Actions(this.webDriver);
+        return this;
     }
 
     @Override
@@ -321,9 +299,9 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
     public File takeBrowserScreenshot(WebElement webElement) throws IOException {
         File f = this.getLogPath().resolve("screenshot-" + LocalDateTime.now().format(DT_FORMATTER) + ".png").toFile();
         Screenshot screenshot = new AShot()
-                .coordsProvider(new WebDriverCoordsProvider()) //find coordinates with WebDriver API
-                .shootingStrategy(ShootingStrategies.viewportPasting(100))
-                .takeScreenshot(webDriver, webElement);
+            .coordsProvider(new WebDriverCoordsProvider()) //find coordinates with WebDriver API
+            .shootingStrategy(ShootingStrategies.viewportPasting(100))
+            .takeScreenshot(webDriver, webElement);
         ImageIO.write(screenshot.getImage(), "PNG", f);
         LOG.debug("Screenshot {}", f.getAbsolutePath());
         return f;
@@ -375,9 +353,9 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         scrollIntoView(webElement);
         Actions builder = new Actions(this.webDriver);
         builder.moveToElement(webElement)
-                .moveByOffset(1, 0)
-                .moveByOffset(-1, 0)
-                .build().perform();
+            .moveByOffset(1, 0)
+            .moveByOffset(-1, 0)
+            .build().perform();
         this.delay();
         return this;
     }
@@ -415,9 +393,9 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
             return this;
         }
         actions.moveToElement(textBox).click()
-                .sendKeys(Keys.chord((SystemUtils.IS_OS_MAC_OSX ? Keys.COMMAND : Keys.CONTROL), "a"))
-                .sendKeys(Keys.DELETE)
-                .build().perform();
+            .sendKeys(Keys.chord((SystemUtils.IS_OS_MAC_OSX ? Keys.COMMAND : Keys.CONTROL), "a"))
+            .sendKeys(Keys.DELETE)
+            .build().perform();
         delay(100);
         return this;
     }
@@ -839,23 +817,28 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
         return this.webDriver;
     }
 
-    public static interface Ajax {
-        public long doRequest();
-
-        public By getByAppear();
-
-        public By getByDisapper();
+    protected boolean isHeadless() {
+        return sysConfig.getBooleanProperty(SYSPROP_WEBBROWSER_HEADLESS, false);
     }
 
-    public static abstract class AbstractAjax implements Ajax {
-        @Override
-        public By getByAppear() {
-            return null;
+    protected WebBrowser setProxy(MutableCapabilities capabilities) {
+        if (browserProxy != null) {
+            capabilities.setCapability(CapabilityType.PROXY, ClientUtil.createSeleniumProxy(browserProxy));
         }
-
-        @Override
-        public By getByDisapper() {
-            return null;
-        }
+        return this;
     }
+
+    protected WebBrowser setLogging(MutableCapabilities capabilities) {
+        LoggingPreferences logs = new LoggingPreferences();
+        logs.enable(LogType.BROWSER, Level.ALL);
+        logs.enable(LogType.CLIENT, Level.ALL);
+        logs.enable(LogType.DRIVER, Level.ALL);
+        logs.enable(LogType.PERFORMANCE, Level.ALL);
+        logs.enable(LogType.PROFILER, Level.ALL);
+        logs.enable(LogType.SERVER, Level.ALL);
+        capabilities.setCapability(CapabilityType.LOGGING_PREFS, logs);
+        return this;
+    }
+
+
 }
