@@ -19,8 +19,11 @@ package com.tascape.reactor.webui.comm;
 import com.tascape.reactor.SystemConfiguration;
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -108,21 +111,23 @@ public class Chrome extends WebBrowser {
 
     private ChromeOptions getChromeOptions() {
         ChromeOptions options = new ChromeOptions();
-        Set<String> optionStrings = Set.of(
-            "allow-running-insecure-content",
-            "disable-dev-shm-usage",
-            "disable-popup-blocking",
-            "disable-infobars",
-            "ignore-certificate-errors",
-            "no-sandbox",
-            "start-maximized");
-        String[] customeOptions = sysConfig.getProperty(Chrome.SYSPROP_OPTIONS, "").split(",");
-        if (customeOptions.length == 0) {
+        Set<String> optionStrings = new HashSet<>(
+            List.of("allow-running-insecure-content",
+                "disable-dev-shm-usage",
+                "disable-popup-blocking",
+                "disable-infobars",
+                "ignore-certificate-errors",
+                "no-sandbox",
+                "start-maximized")
+        );
+        String customeOptions = sysConfig.getProperty(Chrome.SYSPROP_OPTIONS, "");
+        if (StringUtils.isBlank(customeOptions)) {
             LOG.debug("you can specify comma-delimited chrome options with system property {}", Chrome.SYSPROP_OPTIONS);
+        } else {
+            optionStrings.addAll(Arrays.asList(customeOptions.split(",")));
         }
-        optionStrings.addAll(Arrays.asList(customeOptions));
         optionStrings.forEach(o -> {
-            LOG.debug("Chrome option {}", optionStrings);
+            LOG.debug("Chrome option {}", o);
         });
         options.addArguments(optionStrings.toArray(new String[0]));
         //options.addExtensions(new File("/path/to/extension.crx"));
