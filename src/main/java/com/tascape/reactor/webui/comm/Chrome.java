@@ -76,6 +76,10 @@ public class Chrome extends WebBrowser {
             .setAcceptInsecureCerts(true)
             .setPageLoadStrategy(PageLoadStrategy.NORMAL)
             .setHeadless(super.isHeadless());
+        String chromeBinary = super.sysConfig.getProperty(SYSPROP_WEBBROWSER_BINARY, "");
+        if (StringUtils.isNotEmpty(chromeBinary)) {
+            options.setBinary(chromeBinary);
+        }
         super.setProxy(options);
         super.setLogging(options);
         super.setWebDriver(new ChromeDriver(options));

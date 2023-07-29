@@ -88,6 +88,8 @@ public abstract class WebBrowser extends EntityCommunication implements WebDrive
 
     public static final String SYSPROP_WEBBROWSER_TYPE = "reactor.comm.webbrowser.TYPE";
 
+    public static final String SYSPROP_WEBBROWSER_BINARY = "reactor.comm.webbrowser.BINARY";
+
     public static final String SYSPROP_WEBBROWSER_HEADLESS = "reactor.comm.webbrowser.HEADLESS";
 
     public static final String SYSPROP_WEBBROWSER_USE_PROXY = "reactor.comm.webbrowser.USE_PROXY";
