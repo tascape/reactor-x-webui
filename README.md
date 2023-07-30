@@ -14,8 +14,9 @@ Reactor extension for web UI automation, based on Selenium WebDriver.
 ### web browser support
 
 #### Google Chrome
-  * Install the latest Google Chrome.
-  * Download the latest [Chrome WebDriver](http://chromedriver.chromium.org/downloads), unzip it as ~/.reactor/webui/chromedriver.
+  * Install the Google Chrome for test, see https://googlechromelabs.github.io/chrome-for-testing/.
+  * Provide Chrome binary path as a Java system property like: "-Dreactor.comm.webbrowser.BINARY=/Users/tascape/Google Chrome.app/Contents/MacOS/Google Chrome", when running the tests.
+  * Download the corresponding Chrome Driver, unzip it as ~/.reactor/webui/chromedriver.
 
 #### Mozilla Firefox
   * Install the latest Mozilla Firefox.
